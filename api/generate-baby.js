@@ -1,13 +1,10 @@
 import OpenAI from "openai";
+import { toFile } from "openai/uploads";
 import fs from "fs";
 import path from "path";
 
 export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "4mb"
-    }
-  }
+  api: { bodyParser: { sizeLimit: "4mb" } }
 };
 
 const client = new OpenAI({
@@ -21,36 +18,22 @@ function clean(value, fallback = "") {
 function buildPrompt(body) {
   const momPercent = Math.max(0, Math.min(100, Number(body.momPercent ?? 50)));
   const dadPercent = 100 - momPercent;
-  const gender = clean(body.gender, "girl");
-
-  const eyes = clean(body.eyes, "Mom");
-  const hair = clean(body.hair, "Dad");
-  const nose = clean(body.nose, "Mom");
-  const smile = clean(body.smile, "Mom");
-  const face = clean(body.face, "Mom");
 
   return `
-Create a single cute storybook-style baby ${gender} portrait for a baby shower game.
+Create a single cute storybook-style baby ${clean(body.gender, "girl")} portrait for a baby shower game.
 
-Use the two uploaded parent photos only as visual reference. Do not copy adult features literally. Create a wholesome baby portrait that feels like a plausible child inspired by both parents.
+Use the two uploaded parent photos only as visual reference. Do not copy adult features literally.
 
 Guest selected traits:
-- Eyes inspired by: ${eyes}
-- Hair inspired by: ${hair}
-- Nose inspired by: ${nose}
-- Smile inspired by: ${smile}
-- Face shape inspired by: ${face}
+- Eyes inspired by: ${clean(body.eyes, "mother")}
+- Hair inspired by: ${clean(body.hair, "father")}
+- Nose inspired by: ${clean(body.nose, "mother")}
+- Smile inspired by: ${clean(body.smile, "mother")}
+- Face shape inspired by: ${clean(body.face, "mother")}
 - Overall resemblance: ${momPercent}% mother and ${dadPercent}% father
 
 Style:
-- warm pastel baby shower illustration
-- cute, soft, friendly, polished
-- big expressive baby eyes
-- gentle cheeks
-- clean background
-- no text, no watermark, no extra people
-- not photorealistic, not creepy, not uncanny
-- centered portrait, shoulders up
+warm pastel baby shower illustration, cute, soft, friendly, polished, big expressive baby eyes, gentle cheeks, clean background, no text, no watermark, no extra people, not photorealistic, not creepy, centered portrait, shoulders up.
 `.trim();
 }
 
@@ -59,24 +42,22 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Use POST" });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({
-      error: "OPENAI_API_KEY is not configured in Vercel environment variables."
-    });
-  }
-
   try {
-    const prompt = buildPrompt(req.body || {});
     const momPath = path.join(process.cwd(), "assets", "mom.jpg");
     const dadPath = path.join(process.cwd(), "assets", "dad.jpg");
 
+    const momFile = await toFile(fs.createReadStream(momPath), "mom.jpg", {
+      type: "image/jpeg"
+    });
+
+    const dadFile = await toFile(fs.createReadStream(dadPath), "dad.jpg", {
+      type: "image/jpeg"
+    });
+
     const result = await client.images.edit({
       model: "gpt-image-1",
-      image: [
-        fs.createReadStream(momPath),
-        fs.createReadStream(dadPath)
-      ],
-      prompt,
+      image: [momFile, dadFile],
+      prompt: buildPrompt(req.body || {}),
       size: "1024x1024"
     });
 
@@ -86,8 +67,7 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({
-      imageDataUrl: `data:image/png;base64,${b64}`,
-      promptUsed: prompt
+      imageDataUrl: `data:image/png;base64,${b64}`
     });
   } catch (error) {
     console.error(error);
