@@ -1,472 +1,329 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#ffd6e7" />
-  <title>Design The Baby</title>
-  <style>
-    :root{
-      --bg1:#fff8ee; --bg2:#fff1f8; --bg3:#f4efff;
-      --ink:#4d3f46; --muted:#8d7f86;
-      --pink:#ff8fbc; --pink2:#ffd6e7;
-      --lav:#d9c7ff; --mint:#c9f4dd; --cream:#fffaf2;
-      --card:rgba(255,255,255,.82);
-      --shadow:0 18px 45px rgba(136,89,120,.16);
-      --line:rgba(130,90,115,.12);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color:var(--ink);
-      background:
-        radial-gradient(circle at 20% 10%, #fff 0 0.8rem, transparent .85rem),
-        radial-gradient(circle at 88% 18%, #fff 0 0.6rem, transparent .65rem),
-        radial-gradient(circle at 12% 74%, #fff 0 0.55rem, transparent .6rem),
-        linear-gradient(160deg,var(--bg1),var(--bg2) 48%,var(--bg3));
-      overflow-x:hidden;
-    }
-    .sparkles{
-      pointer-events:none; position:fixed; inset:0; opacity:.9; z-index:0;
-      background-image:
-        radial-gradient(circle,#ffd36d 0 2px,transparent 3px),
-        radial-gradient(circle,#ffa6cc 0 2px,transparent 3px),
-        radial-gradient(circle,#bda6ff 0 2px,transparent 3px);
-      background-size: 120px 120px, 180px 180px, 150px 150px;
-      background-position: 20px 30px, 50px 90px, 100px 10px;
-    }
-    .app{position:relative;z-index:1;max-width:470px;margin:0 auto;padding:18px 16px 34px}
-    .hero{text-align:center;padding:18px 10px 8px}
-    .badge{
-      display:inline-flex;gap:6px;align-items:center;
-      background:rgba(255,255,255,.72);border:1px solid var(--line);
-      padding:8px 12px;border-radius:999px;font-size:13px;color:#8a6176;
-      box-shadow:0 8px 20px rgba(0,0,0,.05)
-    }
-    h1{font-size:38px;line-height:1;margin:12px 0 8px;letter-spacing:-1.2px}
-    .sub{color:var(--muted);font-size:16px;line-height:1.35}
-    .card{
-      background:var(--card);border:1px solid var(--line);border-radius:30px;
-      box-shadow:var(--shadow);padding:18px;margin:14px 0;backdrop-filter:blur(10px);
-    }
-    .baby-stage{
-      position:relative; min-height:360px; display:flex; align-items:center; justify-content:center;
-      overflow:hidden;
-      background:linear-gradient(180deg,#fff,#fff9fd);
-    }
-    .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.85}
-    .cloud:before,.cloud:after{content:"";position:absolute;background:#fff;border-radius:50%}
-    .c1{width:100px;height:34px;left:18px;top:26px}.c1:before{width:42px;height:42px;left:18px;top:-20px}.c1:after{width:52px;height:52px;right:16px;top:-28px}
-    .c2{width:80px;height:28px;right:20px;top:70px}.c2:before{width:34px;height:34px;left:10px;top:-16px}.c2:after{width:42px;height:42px;right:12px;top:-23px}
-    .avatar{position:relative;width:275px;height:300px;transform:translateY(10px)}
-    .halo{position:absolute;left:50%;top:0;transform:translateX(-50%);width:220px;height:220px;border-radius:50%;background:#fff4b8;filter:blur(18px);opacity:.55}
-    .head{
-      position:absolute;left:50%;top:45px;transform:translateX(-50%);
-      width:190px;height:176px;border-radius:48% 48% 50% 50%;
-      background:var(--skin,#ffd9bd);border:4px solid rgba(132,86,88,.12);
-      box-shadow: inset 0 -10px rgba(189,116,105,.08), 0 18px 30px rgba(120,75,90,.12);
-      z-index:4;
-    }
-    .ear{position:absolute;top:111px;width:32px;height:42px;border-radius:50%;background:var(--skin,#ffd9bd);z-index:3;border:4px solid rgba(132,86,88,.09)}
-    .ear.left{left:33px}.ear.right{right:33px}
-    .cheek{position:absolute;top:115px;width:38px;height:22px;background:#ff9eb4;border-radius:50%;opacity:.45;z-index:7}
-    .cheek.left{left:45px}.cheek.right{right:45px}
-    .body{
-      position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
-      width:160px;height:112px;border-radius:45px 45px 35px 35px;
-      background:var(--outfit,#ffd6e7);z-index:2;border:4px solid rgba(132,86,88,.08);
-    }
-    .neck{position:absolute;left:50%;top:198px;transform:translateX(-50%);width:52px;height:42px;background:var(--skin,#ffd9bd);border-radius:20px;z-index:2}
-    .collar{position:absolute;left:50%;top:232px;transform:translateX(-50%);width:96px;height:30px;background:#fff;border-radius:0 0 40px 40px;z-index:5;opacity:.9}
-    .arm{position:absolute;top:235px;width:46px;height:78px;background:var(--skin,#ffd9bd);border-radius:30px;z-index:1}
-    .arm.left{left:36px;transform:rotate(20deg)} .arm.right{right:36px;transform:rotate(-20deg)}
-    .hair{position:absolute;left:50%;top:31px;transform:translateX(-50%);width:178px;height:74px;z-index:9;display:none}
-    .hair.curls{display:block}
-    .hair.curls span{position:absolute;width:38px;height:38px;border-radius:50%;background:var(--hair,#5b352b)}
-    .hair.curls span:nth-child(1){left:12px;top:20px}.hair.curls span:nth-child(2){left:44px;top:2px}.hair.curls span:nth-child(3){left:78px;top:0}.hair.curls span:nth-child(4){left:112px;top:5px}.hair.curls span:nth-child(5){left:140px;top:24px}
-    .hair.swoop{display:block;background:var(--hair,#5b352b);border-radius:90px 90px 30px 30px;height:58px;clip-path:ellipse(50% 56% at 50% 30%)}
-    .hair.tuft{display:block;width:70px;height:70px;top:14px}
-    .hair.tuft:before{content:"";position:absolute;left:24px;top:0;width:35px;height:70px;background:var(--hair,#5b352b);border-radius:80% 10% 80% 10%;transform:rotate(26deg)}
-    .bow{position:absolute;left:50%;top:22px;transform:translateX(-50%);z-index:11;display:none}
-    .bow.show{display:block}
-    .bow:before,.bow:after{content:"";display:inline-block;width:34px;height:28px;background:#ff7aa9;border-radius:50% 50% 50% 10%;margin:0 -2px}
-    .bow:after{border-radius:50% 50% 10% 50%}
-    .bow span{position:absolute;left:50%;top:9px;transform:translateX(-50%);width:18px;height:18px;background:#ff4f91;border-radius:50%}
-    .eye{position:absolute;top:93px;width:18px;height:23px;background:#4a3033;border-radius:50%;z-index:8;box-shadow:inset 4px 4px #fff}
-    .eye.left{left:58px}.eye.right{right:58px}
-    .eye.sleepy{height:9px;border-radius:0;background:transparent;border-bottom:5px solid #4a3033;box-shadow:none}
-    .eye.big{width:25px;height:30px}
-    .nose{position:absolute;left:50%;top:120px;transform:translateX(-50%);z-index:8;color:#b87474;font-size:22px}
-    .mouth{position:absolute;left:50%;top:146px;transform:translateX(-50%);z-index:8;width:48px;height:24px;border-bottom:7px solid #9d4a5d;border-radius:0 0 50px 50px}
-    .mouth.pout{width:28px;height:18px;border:5px solid #9d4a5d;border-top:0;border-left:0;border-right:0;transform:translateX(-50%) rotate(180deg);top:154px}
-    .mouth.gummy{height:34px;background:#8f394d;border-radius:0 0 50px 50px;border:0}
-    .mouth.gummy:after{content:"";position:absolute;left:7px;top:0;width:34px;height:10px;background:#fff;border-radius:0 0 10px 10px}
-    .accessory{position:absolute;z-index:12;display:none;font-size:48px}
-    .accessory.paci{display:block;left:50%;top:140px;transform:translateX(-50%);font-size:34px}
-    .accessory.glasses{display:block;left:50%;top:82px;transform:translateX(-50%);font-size:54px}
-    .accessory.crown{display:block;left:50%;top:4px;transform:translateX(-50%);font-size:52px}
-    .tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px}
-    .tab{white-space:nowrap;border:0;border-radius:999px;background:#fff;padding:10px 13px;font-weight:800;color:#846575;border:1px solid var(--line)}
-    .tab.active{background:#ff8fbc;color:#fff}
-    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-    h2{font-size:18px;margin:0}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .choice{
-      border:1px solid var(--line);background:#fff;border-radius:20px;padding:13px 12px;
-      text-align:left;font-weight:800;color:#5f4b54;min-height:58px;
-      box-shadow:0 6px 16px rgba(0,0,0,.04)
-    }
-    .choice small{display:block;font-weight:600;color:#9b8b92;margin-top:3px}
-    .choice.active{background:#fff0f7;border-color:#ff9bc0;box-shadow:0 0 0 3px rgba(255,143,188,.18)}
-    .field{margin:10px 0}
-    label{font-size:13px;color:#8b7480;font-weight:800}
-    input,textarea{
-      width:100%;border:1px solid var(--line);border-radius:18px;background:#fff;padding:14px;
-      font:inherit;margin-top:7px;outline:none;color:var(--ink)
-    }
-    textarea{min-height:88px;resize:vertical}
-    .primary{
-      width:100%;border:0;border-radius:22px;background:linear-gradient(135deg,#ff7fb2,#ffb26b);
-      color:#fff;padding:16px 18px;font-size:17px;font-weight:900;box-shadow:0 12px 25px rgba(255,127,178,.32)
-    }
-    .secondary{
-      border:1px solid var(--line);background:#fff;border-radius:18px;padding:12px 14px;font-weight:800;color:#745d68
-    }
-    .gallery-item{display:flex;gap:12px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:12px;margin:10px 0}
-    .mini{font-size:36px;background:#fff3fa;border-radius:18px;width:56px;height:56px;display:flex;align-items:center;justify-content:center}
-    .gallery-item b{font-size:15px}
-    .meta{font-size:12px;color:#8b7a82;margin-top:3px;line-height:1.35}
-    .quote{font-size:13px;margin-top:7px}
-    .footer-actions{display:flex;gap:10px;margin-top:10px}
-    .toast{
-      position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(120px);
-      background:#4d3f46;color:white;padding:13px 16px;border-radius:999px;z-index:50;
-      box-shadow:0 15px 35px rgba(0,0,0,.22);transition:.35s;font-weight:800;white-space:nowrap
-    }
-    .toast.show{transform:translateX(-50%) translateY(0)}
-    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:40}
-    .confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:4px;animation:fall 1100ms ease-in forwards}
-    @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-    .hidden{display:none}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffd4e6">
+<link rel="manifest" href="manifest.json">
+<title>Design the Baby</title>
+<style>
+:root{
+  --mom:#ff5d9d; --dad:#1593ff; --ink:#172044; --muted:#7c7180;
+  --cream:#fff8ee; --blush:#fff1f7; --card:#fffdfb; --line:rgba(42,32,62,.10);
+  --shadow:0 18px 45px rgba(96,55,84,.14);
+  --skin:#f4c29d; --hair:#2b1b19; --outfit:#fff1df;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 14% 8%,#fff 0 10px,transparent 11px),
+    radial-gradient(circle at 86% 12%,#fff 0 8px,transparent 9px),
+    radial-gradient(circle at 10% 82%,#fff 0 7px,transparent 8px),
+    linear-gradient(150deg,#fff9ef,#fff1f8 55%,#f4efff);
+}
+.page{max-width:1180px;margin:0 auto;padding:18px 14px 36px}
+.hero{text-align:center;padding:14px 0 10px}
+h1{font-size:clamp(36px,7vw,72px);line-height:.9;margin:8px 0 8px;letter-spacing:-2px}
+.script{color:var(--mom)}
+.ribbon{display:inline-flex;background:linear-gradient(135deg,#ff6ca5,#ff9f68);color:white;border-radius:999px;padding:10px 18px;font-weight:1000;box-shadow:0 10px 24px rgba(255,92,157,.25)}
+.sub{font-weight:800;color:#5b5263;margin-top:10px}
+.layout{display:grid;grid-template-columns:250px 1fr 310px;gap:16px;align-items:start}
+.card{background:rgba(255,255,255,.86);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:14px;backdrop-filter:blur(10px)}
+.parent{overflow:hidden;padding:10px}
+.parent img{width:100%;height:270px;object-fit:cover;border-radius:22px;display:block}
+.parent.mom{border:2px solid rgba(255,93,157,.28)}
+.parent.dad{border:2px solid rgba(21,147,255,.25)}
+.parent-label{margin:-34px auto 0;position:relative;width:max-content;background:white;border:2px solid currentColor;border-radius:16px;padding:8px 18px;font-weight:1000;box-shadow:0 8px 18px rgba(0,0,0,.12)}
+.mom .parent-label{color:var(--mom)} .dad .parent-label{color:var(--dad)}
+.main-card{padding:16px}
+.resemblance{margin-bottom:14px;text-align:center}
+.resemblance h2{font-size:22px;margin:0 0 8px}
+.slider-row{display:flex;align-items:center;gap:12px;font-weight:1000;color:#78606e}
+input[type=range]{flex:1;accent-color:var(--mom)}
+.pct{margin-top:6px;font-weight:1000;color:#5d5260}
+.baby-card{position:relative;overflow:hidden;min-height:560px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff,#fff7fb);border-radius:28px}
+.baby-card:before{content:"♡";position:absolute;left:26px;top:80px;color:var(--mom);font-size:34px;opacity:.75}
+.baby-card:after{content:"✦";position:absolute;right:28px;top:105px;color:#ffc84a;font-size:30px;opacity:.9}
+.baby-title{position:absolute;top:16px;font-size:28px;font-weight:1000}
+.tap-note{position:absolute;bottom:18px;background:white;border-radius:18px;padding:13px 18px;font-weight:900;box-shadow:0 10px 22px rgba(0,0,0,.08)}
+.avatar{position:relative;width:330px;height:390px;transform:translateY(26px)}
+.glow{position:absolute;left:50%;top:20px;transform:translateX(-50%);width:260px;height:260px;border-radius:50%;background:#ffef9e;filter:blur(25px);opacity:.38}
+.body{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:190px;height:142px;background:var(--outfit);border-radius:62px 62px 42px 42px;border:4px solid rgba(30,20,40,.08);z-index:1}
+.body:before{content:"";position:absolute;left:50%;top:22px;transform:translateX(-50%);width:80px;height:42px;background:white;border-radius:0 0 40px 40px}
+.neck{position:absolute;left:50%;top:220px;transform:translateX(-50%);width:58px;height:48px;background:var(--skin);border-radius:22px;z-index:1}
+.ear{position:absolute;top:129px;width:42px;height:52px;background:var(--skin);border-radius:50%;border:4px solid rgba(30,20,40,.08);z-index:3}.ear.l{left:43px}.ear.r{right:43px}
+.face{position:absolute;left:50%;top:48px;transform:translateX(-50%);width:220px;height:205px;background:var(--skin);border-radius:var(--faceRadius,48% 48% 53% 53%);border:4px solid rgba(30,20,40,.08);z-index:4;box-shadow:inset 0 -12px rgba(133,83,66,.08),0 16px 32px rgba(80,45,70,.12)}
+.cheek{position:absolute;top:137px;width:46px;height:26px;background:#ff88a9;border-radius:50%;opacity:.42}.cheek.l{left:38px}.cheek.r{right:38px}
+.brow{position:absolute;top:76px;width:42px;height:13px;border-top:6px solid #4d2e2a;border-radius:50%;opacity:var(--browOpacity,.55);z-index:8}.brow.l{left:49px;transform:rotate(var(--browTiltL,-5deg))}.brow.r{right:49px;transform:rotate(var(--browTiltR,5deg))}
+.eye{position:absolute;top:96px;width:32px;height:32px;background:#3c282b;border-radius:50%;box-shadow:inset 7px 5px white;z-index:8}.eye.l{left:55px}.eye.r{right:55px}
+.eye.dad{height:23px;border-radius:55% 55% 45% 45%;top:101px}
+.eye.sleepy{height:9px;background:transparent;border-bottom:5px solid #3c282b;border-radius:0;box-shadow:none}
+.nose{position:absolute;left:50%;top:130px;transform:translateX(-50%);z-index:8}
+.mouth{position:absolute;left:50%;top:160px;transform:translateX(-50%);z-index:8}
+.hair{position:absolute;left:50%;top:22px;transform:translateX(-50%);width:230px;height:126px;z-index:10}
+.hair svg{width:100%;height:100%}
+.bow{position:absolute;left:50%;top:24px;transform:translateX(-50%);z-index:14;width:84px;height:46px;display:none}.bow.show{display:block}
+.bow:before,.bow:after{content:"";position:absolute;width:38px;height:34px;background:#ff73a9;border-radius:60% 50% 50% 12%;top:8px}.bow:before{left:5px}.bow:after{right:5px;border-radius:50% 60% 12% 50%}.bow span{position:absolute;left:50%;top:18px;transform:translateX(-50%);width:22px;height:22px;background:#ff4a93;border-radius:50%}
+.features{display:grid;gap:10px}
+.feature-card{background:rgba(255,255,255,.84);border:1px solid var(--line);border-radius:22px;padding:12px;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.feature-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:1000;margin-bottom:10px}
+.pick-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pick{border:2px solid transparent;background:#fff;border-radius:16px;overflow:hidden;padding:0;text-align:center;color:#554858;font-weight:1000;box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.pick img{display:block;width:100%;height:70px;object-fit:cover}
+.pick span{display:block;padding:7px 4px;font-size:12px}
+.pick.mom.active{border-color:var(--mom);box-shadow:0 0 0 4px rgba(255,93,157,.14)}
+.pick.dad.active{border-color:var(--dad);box-shadow:0 0 0 4px rgba(21,147,255,.14)}
+.form h2{font-size:24px;margin:4px 0 12px}
+.field{margin:12px 0}
+label{display:block;font-size:13px;font-weight:1000;color:#665b68;margin-bottom:6px}
+input,textarea,select{width:100%;border:1px solid var(--line);border-radius:16px;background:#fff;padding:13px 14px;font:inherit;outline:none;color:var(--ink)}
+textarea{min-height:88px;resize:vertical}
+.gender{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.gender button{border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px;font-weight:1000}
+.gender button.active:nth-child(1){background:#e9f4ff;border-color:#6bb7ff;color:#0070d8}
+.gender button.active:nth-child(2){background:#fff0f7;border-color:#ff8fbc;color:#e74486}
+.gender button.active:nth-child(3){background:#fff4d7;border-color:#ffc84a;color:#a66a00}
+.primary{width:100%;border:0;border-radius:18px;background:linear-gradient(135deg,#ff5d9d,#ff9e67);color:white;padding:15px;font-weight:1000;font-size:16px;box-shadow:0 12px 25px rgba(255,93,157,.32)}
+.secondary{border:1px solid var(--line);background:white;border-radius:14px;padding:10px 12px;font-weight:1000;color:#625563}
+.gallery{margin-top:16px}
+.gallery-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.entry{background:white;border:1px solid var(--line);border-radius:20px;padding:12px;margin:10px 0;box-shadow:0 8px 18px rgba(0,0,0,.04)}
+.entry b{font-size:15px}.meta{font-size:12px;color:#7b7180;line-height:1.35;margin-top:4px}.quote{font-size:14px;margin-top:8px}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:4px;animation:fall 1200ms ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(760deg);opacity:0}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(110px);background:#251f2d;color:white;border-radius:999px;padding:13px 16px;font-weight:1000;z-index:30;transition:.35s}.toast.show{transform:translateX(-50%) translateY(0)}
+.mobile-parents{display:none;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:900px){
+  .layout{display:block}
+  .desktop-only{display:none}
+  .mobile-parents{display:grid}
+  .parent img{height:190px}
+  .baby-card{min-height:500px}
+  .avatar{transform:translateY(30px) scale(.9)}
+  .features{margin-top:14px}
+}
+</style>
 </head>
 <body>
-  <div class="sparkles"></div>
-  <div class="confetti" id="confetti"></div>
-  <div class="toast" id="toast">Saved! 💖</div>
+<div class="confetti" id="confetti"></div>
+<div class="toast" id="toast">Saved 💖</div>
+<main class="page">
+  <section class="hero">
+    <h1>Design <span class="script">the Baby</span></h1>
+    <div class="ribbon">A baby shower game</div>
+    <div class="sub">Pick Mom or Dad traits, then make your cutest prediction.</div>
+  </section>
 
-  <main class="app">
-    <section class="hero">
-      <div class="badge">✨ Baby shower game ✨</div>
-      <h1>Design the Baby</h1>
-      <div class="sub">Guess the future cutie. Pick the features, write a prediction, and add it to the gallery.</div>
-    </section>
+  <section class="mobile-parents">
+    <div class="card parent mom"><img src="assets/mom.jpg" alt="Mom"><div class="parent-label">♡ Mom</div></div>
+    <div class="card parent dad"><img src="assets/dad.jpg" alt="Dad"><div class="parent-label">💙 Dad</div></div>
+  </section>
 
-    <section class="card baby-stage">
-      <div class="cloud c1"></div><div class="cloud c2"></div>
-      <div class="avatar" aria-label="Baby preview">
-        <div class="halo"></div>
-        <div class="arm left"></div><div class="arm right"></div>
-        <div class="body" id="body"></div>
-        <div class="neck"></div><div class="collar"></div>
-        <div class="ear left"></div><div class="ear right"></div>
-        <div class="head" id="head">
-          <div class="cheek left"></div><div class="cheek right"></div>
-          <div class="eye left" id="eyeL"></div><div class="eye right" id="eyeR"></div>
-          <div class="nose" id="nose">⌣</div>
-          <div class="mouth" id="mouth"></div>
+  <section class="layout">
+    <aside>
+      <div class="card parent mom desktop-only"><img src="assets/mom.jpg" alt="Mom"><div class="parent-label">♡ Mom</div></div>
+      <div class="features" id="leftFeatures"></div>
+    </aside>
+
+    <section class="card main-card">
+      <div class="resemblance">
+        <h2>♡ Resemblance ♡</h2>
+        <div class="slider-row"><span>Mom</span><input id="slider" type="range" min="0" max="100" value="50"><span>Dad</span></div>
+        <div class="pct" id="pct">50% Mom · 50% Dad</div>
+      </div>
+      <div class="baby-card">
+        <div class="baby-title">Our Baby</div>
+        <div class="avatar">
+          <div class="glow"></div>
+          <div class="body"></div>
+          <div class="neck"></div>
+          <div class="ear l"></div><div class="ear r"></div>
+          <div class="face" id="face">
+            <div class="brow l"></div><div class="brow r"></div>
+            <div class="eye l" id="eyeL"></div><div class="eye r" id="eyeR"></div>
+            <div class="cheek l"></div><div class="cheek r"></div>
+            <div class="nose" id="nose"></div>
+            <div class="mouth" id="mouth"></div>
+          </div>
+          <div class="hair" id="hair"></div>
+          <div class="bow show" id="bow"><span></span></div>
         </div>
-        <div class="hair curls" id="hair"><span></span><span></span><span></span><span></span><span></span></div>
-        <div class="bow" id="bow"><span></span></div>
-        <div class="accessory" id="accessory"></div>
+        <div class="tap-note">Tap Mom/Dad features below 👇</div>
       </div>
     </section>
 
-    <section class="card">
-      <div class="tabs" id="tabs"></div>
-    </section>
+    <aside>
+      <div class="card parent dad desktop-only"><img src="assets/dad.jpg" alt="Dad"><div class="parent-label">💙 Dad</div></div>
+      <div class="card form">
+        <h2>Make Your Predictions! ✨</h2>
+        <div class="field"><label>Baby's name</label><input id="babyName" placeholder="Enter your guess"></div>
+        <div class="field"><label>Boy / Girl / Surprise</label>
+          <div class="gender" id="gender">
+            <button type="button" data-v="Boy">Boy</button>
+            <button type="button" data-v="Girl" class="active">Girl</button>
+            <button type="button" data-v="Surprise">Surprise</button>
+          </div>
+        </div>
+        <div class="field"><label>Birth date</label><input id="birthDate" placeholder="e.g. Oct 12"></div>
+        <div class="field"><label>Birth weight</label><input id="birthWeight" placeholder="e.g. 7 lb 2 oz"></div>
+        <div class="field"><label>Funny prediction / advice</label><textarea id="prediction" placeholder="e.g. Mom's eyes, Dad's smile, and already refusing bedtime."></textarea></div>
+        <div class="field"><label>Your name</label><input id="guestName" placeholder="Guest name"></div>
+        <button class="primary" id="submit" type="button">Submit My Guess ♡</button>
+      </div>
 
-    <section class="card">
-      <div class="section-title">
-        <h2 id="panelTitle">Hair</h2>
-        <button class="secondary" id="randomBtn" type="button">Surprise me 🎲</button>
+      <div class="card gallery">
+        <div class="gallery-head"><h2>Gallery</h2><button class="secondary" id="clear" type="button">Clear</button></div>
+        <div id="entries"></div>
       </div>
-      <div class="grid" id="choices"></div>
-    </section>
-
-    <section class="card">
-      <div class="field">
-        <label for="guest">Guest name</label>
-        <input id="guest" placeholder="e.g. Riya Aunty" />
-      </div>
-      <div class="field">
-        <label for="prediction">Funny baby prediction</label>
-        <textarea id="prediction" placeholder="e.g. Dad's nose, mom's eyes, and already judging everyone's outfit."></textarea>
-      </div>
-      <button class="primary" id="submitBtn" type="button">Save my baby prediction 💖</button>
-    </section>
-
-    <section class="card">
-      <div class="section-title">
-        <h2>Prediction Gallery</h2>
-        <button class="secondary" id="clearBtn" type="button">Clear</button>
-      </div>
-      <div id="gallery"></div>
-    </section>
-  </main>
+    </aside>
+  </section>
+</main>
 
 <script>
-const categories = {
+const featureDefs = [
+  ["eyes","👀 Eyes","Mom's Eyes","Dad's Eyes"],
+  ["hair","💇 Hair","Mom's Hair","Dad's Hair"],
+  ["nose","👃 Nose","Mom's Nose","Dad's Nose"],
+  ["smile","😊 Smile","Mom's Smile","Dad's Smile"],
+  ["face","🧒 Face Shape","Mom's Face","Dad's Face"]
+];
+
+const state = {eyes:"mom",hair:"dad",nose:"mom",smile:"mom",face:"mom",gender:"Girl",slider:50};
+
+const svgs = {
   hair: {
-    title: "Hair",
-    choices: [
-      ["curls", "Curly Cutie", "tiny curls"],
-      ["swoop", "Soft Swoop", "main character hair"],
-      ["tuft", "One Tiny Tuft", "adorable chaos"],
-      ["none", "Almost None", "classic newborn"]
-    ]
-  },
-  hairColor: {
-    title: "Hair Color",
-    choices: [
-      ["#3b2725", "Espresso", "dark & sweet"],
-      ["#6b3f2e", "Chestnut", "warm brown"],
-      ["#1f1d1d", "Midnight", "super dark"],
-      ["#b7794d", "Honey", "golden baby"]
-    ]
-  },
-  eyes: {
-    title: "Eyes",
-    choices: [
-      ["normal", "Sweet Eyes", "classic baby"],
-      ["big", "Big Eyes", "cartoon cute"],
-      ["sleepy", "Sleepy Eyes", "nap queen"],
-      ["sparkle", "Sparkly Eyes", "knows secrets"]
-    ]
+    mom: `<svg viewBox="0 0 230 126"><path fill="var(--hair)" d="M18 104 C18 49 55 15 113 14 C176 12 214 52 213 108 C180 84 146 76 115 78 C80 80 48 84 18 104z"/><path fill="rgba(255,255,255,.11)" d="M43 80 C58 36 99 25 145 31 C104 39 82 58 74 95z"/><path fill="rgba(0,0,0,.16)" d="M110 18 C103 45 108 61 127 82 C105 75 94 60 92 37z"/></svg>`,
+    dad: `<svg viewBox="0 0 230 126"><path fill="var(--hair)" d="M20 94 C25 40 68 12 121 17 C177 22 210 55 204 101 C168 68 111 57 35 105z"/><path fill="rgba(255,255,255,.13)" d="M59 58 C90 27 143 24 184 56 C138 43 96 49 59 82z"/></svg>`
   },
   nose: {
-    title: "Nose",
-    choices: [
-      ["⌣", "Button Nose", "tiny boop"],
-      ["˘", "Mom Nose", "soft curve"],
-      ["⌒", "Dad Nose", "distinguished"],
-      ["•", "Tiny Dot", "barely there"]
-    ]
+    mom: `<svg width="38" height="34" viewBox="0 0 38 34"><path d="M20 5 C14 15 14 23 22 25" fill="none" stroke="#b67470" stroke-width="4" stroke-linecap="round"/><path d="M13 26 C18 29 24 29 28 25" fill="none" stroke="#b67470" stroke-width="3" stroke-linecap="round"/></svg>`,
+    dad: `<svg width="40" height="36" viewBox="0 0 40 36"><path d="M19 4 C27 16 27 25 18 27" fill="none" stroke="#b67470" stroke-width="4" stroke-linecap="round"/><path d="M13 28 C19 31 26 31 31 26" fill="none" stroke="#b67470" stroke-width="3" stroke-linecap="round"/></svg>`
   },
-  smile: {
-    title: "Smile",
-    choices: [
-      ["smile", "Sweet Smile", "angel mode"],
-      ["gummy", "Gummy Grin", "no teeth needed"],
-      ["pout", "Tiny Pout", "drama loading"],
-      ["giggle", "Giggle Face", "troublemaker"]
-    ]
-  },
-  outfit: {
-    title: "Outfit",
-    choices: [
-      ["#ffd6e7", "Pink Onesie", "baby shower classic"],
-      ["#d9c7ff", "Lavender Fit", "soft & fancy"],
-      ["#c9f4dd", "Mint Swaddle", "fresh cutie"],
-      ["#ffe7a8", "Sunshine Suit", "happy baby"]
-    ]
-  },
-  accessory: {
-    title: "Accessory",
-    choices: [
-      ["bow", "Tiny Bow", "main character"],
-      ["paci", "Pacifier", "peace offering"],
-      ["crown", "Princess Crown", "royalty"],
-      ["glasses", "Sunglasses", "too cool"],
-      ["none", "No Accessory", "natural beauty"]
-    ]
-  },
-  vibe: {
-    title: "Future Vibe",
-    choices: [
-      ["CEO", "CEO Baby", "runs the house"],
-      ["Foodie", "Foodie", "milk critic"],
-      ["Dancer", "Dancer", "party starter"],
-      ["Drama Queen", "Drama Queen", "Oscar incoming"]
-    ]
+  mouth: {
+    mom: `<svg width="66" height="38" viewBox="0 0 66 38"><path d="M13 10 C20 31 47 31 54 10" fill="none" stroke="#9b465a" stroke-width="6" stroke-linecap="round"/><path d="M19 13 C29 18 39 18 49 13" fill="none" stroke="#ffb1bd" stroke-width="3" stroke-linecap="round"/></svg>`,
+    dad: `<svg width="70" height="38" viewBox="0 0 70 38"><path d="M12 9 C21 33 51 32 58 8" fill="none" stroke="#934456" stroke-width="6" stroke-linecap="round"/><path d="M21 10 H49" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>`
   }
 };
 
-const state = {
-  hair:"curls", hairColor:"#3b2725", eyes:"normal", nose:"⌣",
-  smile:"smile", outfit:"#ffd6e7", accessory:"bow", vibe:"CEO"
-};
-let activeCat = "hair";
-
-const tabs = document.getElementById("tabs");
-const choices = document.getElementById("choices");
-const panelTitle = document.getElementById("panelTitle");
-
-function labelFor(cat, value){
-  const found = categories[cat].choices.find(c => c[0] === value);
-  return found ? found[1] : value;
-}
-
-function renderTabs(){
-  tabs.innerHTML = Object.entries(categories).map(([key, cat]) =>
-    `<button type="button" class="tab ${key===activeCat?'active':''}" data-cat="${key}">${cat.title}</button>`
-  ).join("");
-  tabs.querySelectorAll(".tab").forEach(btn => {
-    btn.addEventListener("click", () => {
-      activeCat = btn.dataset.cat;
-      renderTabs(); renderChoices();
-    });
-  });
-}
-
-function renderChoices(){
-  const cat = categories[activeCat];
-  panelTitle.textContent = cat.title;
-  choices.innerHTML = cat.choices.map(([value, label, sub]) =>
-    `<button type="button" class="choice ${state[activeCat]===value?'active':''}" data-value="${value}">
-      ${label}<small>${sub}</small>
-    </button>`
-  ).join("");
-  choices.querySelectorAll(".choice").forEach(btn => {
-    btn.addEventListener("click", () => {
-      state[activeCat] = btn.dataset.value;
-      renderChoices();
+function renderFeatureCards(){
+  const html = featureDefs.map(([key,title,momLabel,dadLabel]) => `
+    <div class="feature-card">
+      <div class="feature-title">${title}</div>
+      <div class="pick-row">
+        <button type="button" class="pick mom ${state[key]==='mom'?'active':''}" data-key="${key}" data-v="mom">
+          <img src="assets/mom_${key==='smile'?'smile':key}.jpg" alt="${momLabel}">
+          <span>${momLabel}</span>
+        </button>
+        <button type="button" class="pick dad ${state[key]==='dad'?'active':''}" data-key="${key}" data-v="dad">
+          <img src="assets/dad_${key==='smile'?'smile':key}.jpg" alt="${dadLabel}">
+          <span>${dadLabel}</span>
+        </button>
+      </div>
+    </div>
+  `).join("");
+  leftFeatures.innerHTML = html;
+  leftFeatures.querySelectorAll(".pick").forEach(btn => {
+    btn.onclick = () => {
+      state[btn.dataset.key] = btn.dataset.v;
+      renderFeatureCards();
       renderBaby();
-    });
+    };
   });
 }
 
 function renderBaby(){
-  const hair = document.getElementById("hair");
-  const bow = document.getElementById("bow");
-  const accessory = document.getElementById("accessory");
-  const eyeL = document.getElementById("eyeL");
-  const eyeR = document.getElementById("eyeR");
-  const mouth = document.getElementById("mouth");
-  const nose = document.getElementById("nose");
-
-  document.documentElement.style.setProperty("--hair", state.hairColor);
-  document.documentElement.style.setProperty("--outfit", state.outfit);
-
-  hair.className = "hair";
-  if(state.hair !== "none") hair.classList.add(state.hair);
-
-  eyeL.className = "eye left";
-  eyeR.className = "eye right";
-  if(state.eyes === "big" || state.eyes === "sparkle"){ eyeL.classList.add("big"); eyeR.classList.add("big"); }
-  if(state.eyes === "sleepy"){ eyeL.classList.add("sleepy"); eyeR.classList.add("sleepy"); }
-  if(state.eyes === "sparkle"){ eyeL.style.boxShadow = "inset 5px 4px #fff, 0 0 0 4px rgba(255,214,231,.7)"; eyeR.style.boxShadow = eyeL.style.boxShadow; }
-  else { eyeL.style.boxShadow = ""; eyeR.style.boxShadow = ""; }
-
-  nose.textContent = state.nose;
-
-  mouth.className = "mouth";
-  if(state.smile === "gummy") mouth.classList.add("gummy");
-  if(state.smile === "pout") mouth.classList.add("pout");
-  if(state.smile === "giggle") { mouth.classList.add("gummy"); mouth.style.transform = "translateX(-50%) rotate(-5deg)"; }
-  else { mouth.style.transform = ""; }
-
-  bow.className = "bow";
-  accessory.className = "accessory";
-  accessory.textContent = "";
-  if(state.accessory === "bow") bow.classList.add("show");
-  if(state.accessory === "paci"){ accessory.textContent = "🍼"; accessory.classList.add("paci");}
-  if(state.accessory === "crown"){ accessory.textContent = "👑"; accessory.classList.add("crown");}
-  if(state.accessory === "glasses"){ accessory.textContent = "😎"; accessory.classList.add("glasses");}
+  document.documentElement.style.setProperty("--faceRadius", state.face === "mom" ? "48% 48% 54% 54%" : "45% 45% 50% 50%");
+  document.documentElement.style.setProperty("--browOpacity", state.eyes === "dad" ? ".9" : ".55");
+  document.documentElement.style.setProperty("--browTiltL", state.eyes === "dad" ? "-2deg" : "-8deg");
+  document.documentElement.style.setProperty("--browTiltR", state.eyes === "dad" ? "2deg" : "8deg");
+  hair.innerHTML = svgs.hair[state.hair];
+  nose.innerHTML = svgs.nose[state.nose];
+  mouth.innerHTML = svgs.mouth[state.smile];
+  eyeL.className = "eye l" + (state.eyes === "dad" ? " dad" : "");
+  eyeR.className = "eye r" + (state.eyes === "dad" ? " dad" : "");
 }
 
-function entrySummary(e){
-  return `${labelFor("hair",e.hair)} • ${labelFor("eyes",e.eyes)} • ${labelFor("accessory",e.accessory)} • ${labelFor("vibe",e.vibe)}`;
+function renderSlider(){
+  state.slider = Number(slider.value);
+  pct.textContent = `${100-state.slider}% Mom · ${state.slider}% Dad`;
 }
 
-function getEntries(){ return JSON.parse(localStorage.getItem("designBabyV2") || "[]"); }
-function setEntries(entries){ localStorage.setItem("designBabyV2", JSON.stringify(entries)); }
+slider.oninput = () => { renderSlider(); };
 
-function renderGallery(){
-  const gallery = document.getElementById("gallery");
-  const entries = getEntries();
-  if(!entries.length){
-    gallery.innerHTML = `<div class="meta">No predictions yet. Be the first to design the baby ✨</div>`;
-    return;
-  }
-  gallery.innerHTML = entries.slice().reverse().map(e => `
-    <div class="gallery-item">
-      <div class="mini">👶</div>
-      <div>
-        <b>${escapeHtml(e.name || "Anonymous")}</b>
-        <div class="meta">${escapeHtml(entrySummary(e))}</div>
-        <div class="quote">${escapeHtml(e.prediction || "No prediction, just vibes.")}</div>
+gender.querySelectorAll("button").forEach(b => {
+  b.onclick = () => {
+    gender.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    state.gender = b.dataset.v;
+  };
+});
+
+function getEntries(){ return JSON.parse(localStorage.getItem("babyV4Entries") || "[]");}
+function setEntries(x){ localStorage.setItem("babyV4Entries", JSON.stringify(x));}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
+function renderEntries(){
+  const data = getEntries();
+  if(!data.length){ entries.innerHTML = `<div class="meta">No guesses yet. First guest gets bragging rights ✨</div>`; return; }
+  entries.innerHTML = data.slice().reverse().map(e => `
+    <div class="entry">
+      <b>${esc(e.guestName || "Anonymous")}'s guess</b>
+      <div class="meta">
+        Name: ${esc(e.babyName || "?")} · ${esc(e.gender)} · Date: ${esc(e.birthDate || "?")} · Weight: ${esc(e.birthWeight || "?")}<br>
+        ${esc(e.eyes)} eyes · ${esc(e.hair)} hair · ${esc(e.nose)} nose · ${esc(e.smile)} smile · ${100-e.slider}% Mom/${e.slider}% Dad
       </div>
+      <div class="quote">“${esc(e.prediction || "Cute, chaotic, perfect.")}”</div>
     </div>
   `).join("");
 }
-
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
-}
-
 function toast(msg){
-  const t = document.getElementById("toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 1600);
+  const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1500);
 }
-
-function confetti(){
-  const box = document.getElementById("confetti");
-  const colors = ["#ff8fbc","#ffd36d","#bda6ff","#91e7b3","#ffb26b"];
-  box.innerHTML = "";
-  for(let i=0;i<46;i++){
-    const el = document.createElement("i");
-    el.style.left = Math.random()*100 + "vw";
-    el.style.background = colors[Math.floor(Math.random()*colors.length)];
-    el.style.animationDelay = Math.random()*260 + "ms";
-    el.style.transform = `rotate(${Math.random()*180}deg)`;
-    box.appendChild(el);
+function burst(){
+  const colors=["#ff5d9d","#1593ff","#ffc84a","#8ee6b7","#c9b3ff"];
+  confetti.innerHTML="";
+  for(let i=0;i<52;i++){
+    const el=document.createElement("i");
+    el.style.left=Math.random()*100+"vw";
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDelay=Math.random()*250+"ms";
+    confetti.appendChild(el);
   }
-  setTimeout(()=>box.innerHTML="",1500);
+  setTimeout(()=>confetti.innerHTML="",1600);
 }
-
-document.getElementById("submitBtn").addEventListener("click", () => {
+submit.onclick = () => {
   const entry = {
-    ...state,
-    name: document.getElementById("guest").value.trim(),
-    prediction: document.getElementById("prediction").value.trim(),
+    eyes: state.eyes === "mom" ? "Mom's" : "Dad's",
+    hair: state.hair === "mom" ? "Mom's" : "Dad's",
+    nose: state.nose === "mom" ? "Mom's" : "Dad's",
+    smile: state.smile === "mom" ? "Mom's" : "Dad's",
+    face: state.face === "mom" ? "Mom's" : "Dad's",
+    slider: state.slider,
+    gender: state.gender,
+    babyName: babyName.value.trim(),
+    birthDate: birthDate.value.trim(),
+    birthWeight: birthWeight.value.trim(),
+    prediction: prediction.value.trim(),
+    guestName: guestName.value.trim(),
     createdAt: new Date().toISOString()
   };
-  const entries = getEntries();
-  entries.push(entry);
-  setEntries(entries);
-  renderGallery();
-  confetti();
-  toast("Prediction saved! 💖");
-  document.getElementById("prediction").value = "";
-});
+  const data = getEntries(); data.push(entry); setEntries(data);
+  renderEntries(); burst(); toast("Guess saved 💖"); prediction.value="";
+};
+clear.onclick = () => {
+  if(confirm("Clear guesses saved on this device?")){ setEntries([]); renderEntries(); toast("Gallery cleared");}
+};
 
-document.getElementById("clearBtn").addEventListener("click", () => {
-  if(confirm("Clear all saved predictions on this device?")){
-    setEntries([]);
-    renderGallery();
-    toast("Gallery cleared");
-  }
-});
-
-document.getElementById("randomBtn").addEventListener("click", () => {
-  Object.entries(categories).forEach(([key, cat]) => {
-    const pick = cat.choices[Math.floor(Math.random()*cat.choices.length)][0];
-    state[key] = pick;
-  });
-  renderChoices();
-  renderBaby();
-  toast("Random baby designed 🎲");
-});
-
-renderTabs();
-renderChoices();
+renderFeatureCards();
 renderBaby();
-renderGallery();
+renderSlider();
+renderEntries();
+
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+}
 </script>
 </body>
 </html>

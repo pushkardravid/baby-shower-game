@@ -1,9 +1,9 @@
 {
-  "name": "Design The Baby",
+  "name": "Design the Baby",
   "short_name": "Baby Design",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fff1f8",
-  "theme_color": "#ffd6e7",
+  "background_color": "#fff7fb",
+  "theme_color": "#ffd4e6",
   "description": "A cute baby shower prediction game."
 }
