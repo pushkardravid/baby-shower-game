@@ -81,6 +81,52 @@ textarea{min-height:88px;resize:vertical}
 @keyframes fall{to{transform:translateY(110vh) rotate(760deg);opacity:0}}
 .mobile-parents{display:none;grid-template-columns:1fr 1fr;gap:10px}
 .note{font-size:12px;color:#7b7180;line-height:1.35;margin-top:10px}
+
+.loader-screen{
+  position:fixed;inset:0;z-index:100;
+  background:linear-gradient(150deg,rgba(255,249,239,.96),rgba(255,241,248,.97),rgba(242,237,255,.96));
+  display:none;align-items:center;justify-content:center;padding:22px;text-align:center;
+}
+.loader-screen.show{display:flex}
+.loader-card{
+  width:min(520px,100%);background:rgba(255,255,255,.9);border:1px solid var(--line);
+  border-radius:34px;padding:28px 22px;box-shadow:0 24px 70px rgba(100,55,84,.22)
+}
+.baby-loader{
+  width:112px;height:112px;margin:0 auto 18px;border-radius:50%;
+  background:radial-gradient(circle at 35% 32%,#fff 0 10px,transparent 11px),
+             radial-gradient(circle at 65% 32%,#fff 0 10px,transparent 11px),
+             linear-gradient(135deg,#ffd9bf,#ffc09d);
+  border:8px solid white;box-shadow:0 14px 35px rgba(0,0,0,.12);
+  position:relative;animation:bob 1300ms ease-in-out infinite;
+}
+.baby-loader:before,.baby-loader:after{
+  content:"";position:absolute;top:43px;width:14px;height:14px;background:#3d2b30;border-radius:50%;
+}
+.baby-loader:before{left:31px}.baby-loader:after{right:31px}
+.baby-loader span{
+  position:absolute;left:50%;bottom:25px;transform:translateX(-50%);
+  width:34px;height:16px;border-bottom:5px solid #9b465a;border-radius:0 0 30px 30px;
+}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
+.loader-card h2{margin:0 0 8px;font-size:28px}
+.loader-card p{margin:8px 0;color:#6b6070;line-height:1.45}
+.fact-box{
+  margin-top:18px;background:#fff7fb;border:1px solid var(--line);border-radius:22px;padding:16px;
+  min-height:88px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#51475a;
+}
+.progress-dots{display:flex;gap:7px;justify-content:center;margin-top:16px}
+.progress-dots i{width:10px;height:10px;border-radius:50%;background:#ff6aa5;animation:pulse 900ms infinite}
+.progress-dots i:nth-child(2){animation-delay:160ms;background:#ffc84a}
+.progress-dots i:nth-child(3){animation-delay:320ms;background:#148cf0}
+@keyframes pulse{50%{transform:scale(1.45);opacity:.55}}
+.prompt-tools{margin-top:12px}
+.prompt-preview{
+  display:none;margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:12px;font-size:12px;line-height:1.4;color:#625667;white-space:pre-wrap;max-height:190px;overflow:auto;
+}
+.prompt-preview.show{display:block}
+
 @media(max-width:950px){
  .grid-layout{display:block}
  .desktop-only{display:none}
@@ -95,12 +141,21 @@ textarea{min-height:88px;resize:vertical}
 <body>
 <div class="confetti" id="confetti"></div>
 <div class="toast" id="toast">Saved 💖</div>
+<div class="loader-screen" id="loaderScreen">
+  <div class="loader-card">
+    <div class="baby-loader"><span></span></div>
+    <h2>Designing your AI baby…</h2>
+    <p>This can take a little bit. We’re using both parent photos, your Mom/Dad trait picks, and your custom prompt.</p>
+    <div class="fact-box" id="loaderFact">Tiny toes loading…</div>
+    <div class="progress-dots"><i></i><i></i><i></i></div>
+  </div>
+</div>
 
 <main class="page">
   <section class="hero">
     <h1>Design <span>the Baby</span></h1>
-    <div class="ribbon">Hybrid baby shower game</div>
-    <div class="sub">Instant curated portrait by default. Optional AI baby using Mom + Dad photos.</div>
+    <div class="ribbon">AI baby shower game</div>
+    <div class="sub">Instant portrait by default. Optional AI uses Mom + Dad photos, your selected traits, and your custom prompt.</div>
   </section>
 
   <section class="mobile-parents">
@@ -130,8 +185,16 @@ textarea{min-height:88px;resize:vertical}
           <button id="aiBtn" type="button" class="ai">✨ Generate AI Baby</button>
         </div>
       </div>
+      <div class="field">
+        <label>Optional custom AI prompt</label>
+        <textarea id="customPrompt" placeholder="e.g. Make her more realistic, with Mom's expressive eyes, Dad's smile, soft black hair, wearing a cream onesie."></textarea>
+      </div>
+      <div class="prompt-tools">
+        <button id="promptPreviewBtn" type="button" class="secondary">Show AI prompt preview</button>
+        <div id="promptPreview" class="prompt-preview"></div>
+      </div>
       <div class="note">
-        AI generation requires a Vercel env var named <b>OPENAI_API_KEY</b>. Without it, the app still works with instant portraits.
+        AI generation requires <b>OPENAI_API_KEY</b>. The AI endpoint sends Mom photo + Dad photo + your selections + your optional prompt.
       </div>
     </section>
 
@@ -247,23 +310,84 @@ curatedBtn.onclick = () => {
   toast("Instant portrait selected");
 };
 
+const babyFacts = [
+  "Newborns can recognize familiar voices surprisingly quickly after birth.",
+  "Babies are drawn to high-contrast patterns, which is why bold black-and-white toys are so popular.",
+  "A baby's first social smile usually becomes one of the parents' favorite milestones.",
+  "Tiny fingers loading… newborns are born with a surprisingly strong grasp reflex.",
+  "Babies spend a lot of early life sleeping because their brains and bodies are growing fast.",
+  "Baby shower prediction games are basically family folklore with better UI.",
+  "The cutest guesses are usually the ones with unnecessary confidence.",
+  "Future bedtime negotiator loading…",
+  "This portrait is being blended from Mom photo, Dad photo, and your selected traits.",
+  "The AI is not predicting genetics — just making a fun baby-shower portrait."
+];
+
+let factTimer = null;
+let factIndex = 0;
+
+function startLoader(){
+  factIndex = Math.floor(Math.random() * babyFacts.length);
+  loaderFact.textContent = babyFacts[factIndex];
+  loaderScreen.classList.add("show");
+  factTimer = setInterval(() => {
+    factIndex = (factIndex + 1) % babyFacts.length;
+    loaderFact.textContent = babyFacts[factIndex];
+  }, 2800);
+}
+
+function stopLoader(){
+  loaderScreen.classList.remove("show");
+  if(factTimer) clearInterval(factTimer);
+  factTimer = null;
+}
+
+function buildRequestBody(){
+  return {
+    eyes: state.eyes === "mom" ? "mother" : "father",
+    hair: state.hair === "mom" ? "mother" : "father",
+    nose: state.nose === "mom" ? "mother" : "father",
+    smile: state.smile === "mom" ? "mother" : "father",
+    face: state.face === "mom" ? "mother" : "father",
+    gender: state.gender,
+    momPercent: 100 - state.slider,
+    customPrompt: customPrompt.value.trim()
+  };
+}
+
+function localPromptPreview(){
+  const body = buildRequestBody();
+  return `AI will send:
+- Mom photo: assets/mom.jpg
+- Dad photo: assets/dad.jpg
+- Eyes: ${body.eyes}
+- Hair: ${body.hair}
+- Nose: ${body.nose}
+- Smile: ${body.smile}
+- Face shape: ${body.face}
+- Resemblance: ${body.momPercent}% mother / ${100-body.momPercent}% father
+- Gender: ${body.gender}
+- Extra request: ${body.customPrompt || "none"}
+
+Style target:
+Realistic baby portrait, soft studio photography look, warm pastel background, cute and natural, not sketch/cartoon.`;
+}
+
+promptPreviewBtn.onclick = () => {
+  promptPreview.textContent = localPromptPreview();
+  promptPreview.classList.toggle("show");
+};
+
 aiBtn.onclick = async () => {
   const status = document.getElementById("status");
   aiBtn.disabled = true;
   portrait.classList.add("loading");
   status.classList.add("show");
   status.textContent = "Generating AI baby...";
+  startLoader();
 
   try {
-    const body = {
-      eyes: state.eyes === "mom" ? "mother" : "father",
-      hair: state.hair === "mom" ? "mother" : "father",
-      nose: state.nose === "mom" ? "mother" : "father",
-      smile: state.smile === "mom" ? "mother" : "father",
-      face: state.face === "mom" ? "mother" : "father",
-      gender: state.gender,
-      momPercent: 100 - state.slider
-    };
+    const body = buildRequestBody();
 
     const res = await fetch("/api/generate-baby", {
       method: "POST",
@@ -276,6 +400,7 @@ aiBtn.onclick = async () => {
 
     state.portraitSrc = data.imageDataUrl;
     state.portraitType = "ai";
+    state.promptUsed = data.promptUsed || localPromptPreview();
     portrait.src = data.imageDataUrl;
     toast("AI baby generated ✨");
   } catch (e) {
@@ -285,6 +410,7 @@ aiBtn.onclick = async () => {
     aiBtn.disabled = false;
     portrait.classList.remove("loading");
     status.classList.remove("show");
+    stopLoader();
   }
 };
 
@@ -344,6 +470,7 @@ submit.onclick = () => {
     gender: state.gender,
     portraitSrc: state.portraitSrc,
     portraitType: state.portraitType,
+    promptUsed: state.promptUsed || "",
     babyName: babyName.value.trim(),
     birthDate: birthDate.value.trim(),
     birthWeight: birthWeight.value.trim(),

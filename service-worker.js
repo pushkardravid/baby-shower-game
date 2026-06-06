@@ -1,4 +1,4 @@
-const CACHE_NAME = "design-the-baby-v5";
+const CACHE_NAME = "design-the-baby-v6";
 const FILES = [
   "./",
   "./index.html",
