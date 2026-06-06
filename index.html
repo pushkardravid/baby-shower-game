@@ -1,508 +1,107 @@
 <!doctype html>
-<html lang="en">
-<head>
+<html><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffd4e6">
-<link rel="manifest" href="manifest.json">
-<title>Design the Baby</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Design the Baby V7</title>
 <style>
-:root{
-  --mom:#ff5d9d; --dad:#148cf0; --ink:#1f1b36; --muted:#766d7b; --line:rgba(40,30,60,.12);
-  --cream:#fff8ef; --blush:#fff1f8; --shadow:0 18px 45px rgba(100,55,84,.14);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;min-height:100vh;color:var(--ink);
-  font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:
-    radial-gradient(circle at 12% 8%,#fff 0 10px,transparent 11px),
-    radial-gradient(circle at 86% 10%,#fff 0 8px,transparent 9px),
-    radial-gradient(circle at 12% 82%,#fff 0 7px,transparent 8px),
-    linear-gradient(150deg,#fff9ef,#fff1f8 55%,#f2edff);
-}
-.page{max-width:1180px;margin:0 auto;padding:18px 14px 38px}
-.hero{text-align:center;padding:12px 0 12px}
-h1{font-size:clamp(38px,7vw,74px);line-height:.9;margin:8px 0;letter-spacing:-2px}
-h1 span{color:var(--mom)}
-.ribbon{display:inline-flex;background:linear-gradient(135deg,#ff5d9d,#ff9e67);color:white;border-radius:999px;padding:10px 18px;font-weight:1000;box-shadow:0 10px 24px rgba(255,92,157,.25)}
-.sub{font-weight:850;color:#5b5263;margin-top:10px}
-.grid-layout{display:grid;grid-template-columns:280px 1fr 330px;gap:16px;align-items:start}
-.card{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:14px;backdrop-filter:blur(10px)}
-.parent{overflow:hidden;padding:10px}
-.parent img{width:100%;height:310px;object-fit:cover;border-radius:22px;display:block}
-.parent-label{margin:-34px auto 0;position:relative;width:max-content;background:white;border:2px solid currentColor;border-radius:16px;padding:8px 18px;font-weight:1000;box-shadow:0 8px 18px rgba(0,0,0,.12)}
-.parent.mom{border:2px solid rgba(255,93,157,.25)} .parent.mom .parent-label{color:var(--mom)}
-.parent.dad{border:2px solid rgba(20,140,240,.24)} .parent.dad .parent-label{color:var(--dad)}
-.feature-list{display:grid;gap:10px;margin-top:14px}
-.feature-card{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:22px;padding:12px;box-shadow:0 10px 24px rgba(0,0,0,.05)}
-.feature-title{font-size:17px;font-weight:1000;margin-bottom:10px}
-.pick-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pick{border:2px solid transparent;background:white;border-radius:16px;overflow:hidden;padding:0;font-weight:1000;color:#544b5a;box-shadow:0 6px 16px rgba(0,0,0,.06)}
-.pick img{display:block;width:100%;height:72px;object-fit:cover}
-.pick span{display:block;padding:7px 4px;font-size:12px}
-.pick.mom.active{border-color:var(--mom);box-shadow:0 0 0 4px rgba(255,93,157,.14)}
-.pick.dad.active{border-color:var(--dad);box-shadow:0 0 0 4px rgba(20,140,240,.14)}
-.main{padding:16px}
-.resemblance{text-align:center;margin-bottom:14px}
-.resemblance h2{margin:0 0 8px;font-size:22px}
-.slider-row{display:flex;gap:12px;align-items:center;font-weight:1000;color:#735f6c}
-input[type=range]{flex:1;accent-color:var(--mom)}
-.pct{font-weight:1000;margin-top:6px;color:#5b5160}
-.portrait-card{position:relative;overflow:hidden;border-radius:30px;background:linear-gradient(180deg,#fff,#fff7fb);min-height:620px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
-.portrait-title{position:absolute;top:16px;font-size:28px;font-weight:1000;z-index:2}
-.portrait{width:min(88%,520px);aspect-ratio:1;border-radius:34px;object-fit:cover;box-shadow:0 20px 50px rgba(75,40,70,.22);border:8px solid white;background:#fff;transition:.25s}
-.portrait.loading{filter:blur(3px);opacity:.65}
-.actions{position:absolute;left:14px;right:14px;bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.primary,.secondary,.ai{border:0;border-radius:18px;padding:14px 12px;font-weight:1000;font-size:15px}
-.primary{background:linear-gradient(135deg,#ff5d9d,#ff9e67);color:white;box-shadow:0 12px 25px rgba(255,93,157,.28)}
-.ai{background:linear-gradient(135deg,#8e63ff,#ff63ad);color:white;box-shadow:0 12px 25px rgba(142,99,255,.26)}
-.secondary{background:white;color:#655868;border:1px solid var(--line)}
-.status{position:absolute;top:58px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-weight:1000;color:#6e5b68;display:none;z-index:4;box-shadow:0 8px 20px rgba(0,0,0,.08)}
-.status.show{display:block}
-.form h2{font-size:24px;margin:4px 0 12px}
-.field{margin:12px 0}
-label{display:block;font-size:13px;font-weight:1000;color:#665b68;margin-bottom:6px}
-input,textarea{width:100%;border:1px solid var(--line);border-radius:16px;background:#fff;padding:13px 14px;font:inherit;outline:none;color:var(--ink)}
-textarea{min-height:88px;resize:vertical}
-.gender{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.gender button{border:1px solid var(--line);border-radius:14px;background:#fff;padding:10px;font-weight:1000}
-.gender button.active:nth-child(1){background:#e9f4ff;border-color:#6bb7ff;color:#0070d8}
-.gender button.active:nth-child(2){background:#fff0f7;border-color:#ff8fbc;color:#e74486}
-.gender button.active:nth-child(3){background:#fff4d7;border-color:#ffc84a;color:#a66a00}
-.gallery{margin-top:16px}
-.gallery-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.entry{background:white;border:1px solid var(--line);border-radius:22px;padding:12px;margin:10px 0;box-shadow:0 8px 18px rgba(0,0,0,.04)}
-.entry-row{display:flex;gap:12px;align-items:flex-start}
-.entry img{width:70px;height:70px;border-radius:16px;object-fit:cover;flex:0 0 auto}
-.entry b{font-size:15px}.meta{font-size:12px;color:#7b7180;line-height:1.35;margin-top:4px}.quote{font-size:14px;margin-top:8px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(110px);background:#251f2d;color:white;border-radius:999px;padding:13px 16px;font-weight:1000;z-index:30;transition:.35s}.toast.show{transform:translateX(-50%) translateY(0)}
-.confetti{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:4px;animation:fall 1200ms ease-in forwards}
-@keyframes fall{to{transform:translateY(110vh) rotate(760deg);opacity:0}}
-.mobile-parents{display:none;grid-template-columns:1fr 1fr;gap:10px}
-.note{font-size:12px;color:#7b7180;line-height:1.35;margin-top:10px}
-
-.loader-screen{
-  position:fixed;inset:0;z-index:100;
-  background:linear-gradient(150deg,rgba(255,249,239,.96),rgba(255,241,248,.97),rgba(242,237,255,.96));
-  display:none;align-items:center;justify-content:center;padding:22px;text-align:center;
-}
-.loader-screen.show{display:flex}
-.loader-card{
-  width:min(520px,100%);background:rgba(255,255,255,.9);border:1px solid var(--line);
-  border-radius:34px;padding:28px 22px;box-shadow:0 24px 70px rgba(100,55,84,.22)
-}
-.baby-loader{
-  width:112px;height:112px;margin:0 auto 18px;border-radius:50%;
-  background:radial-gradient(circle at 35% 32%,#fff 0 10px,transparent 11px),
-             radial-gradient(circle at 65% 32%,#fff 0 10px,transparent 11px),
-             linear-gradient(135deg,#ffd9bf,#ffc09d);
-  border:8px solid white;box-shadow:0 14px 35px rgba(0,0,0,.12);
-  position:relative;animation:bob 1300ms ease-in-out infinite;
-}
-.baby-loader:before,.baby-loader:after{
-  content:"";position:absolute;top:43px;width:14px;height:14px;background:#3d2b30;border-radius:50%;
-}
-.baby-loader:before{left:31px}.baby-loader:after{right:31px}
-.baby-loader span{
-  position:absolute;left:50%;bottom:25px;transform:translateX(-50%);
-  width:34px;height:16px;border-bottom:5px solid #9b465a;border-radius:0 0 30px 30px;
-}
-@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
-.loader-card h2{margin:0 0 8px;font-size:28px}
-.loader-card p{margin:8px 0;color:#6b6070;line-height:1.45}
-.fact-box{
-  margin-top:18px;background:#fff7fb;border:1px solid var(--line);border-radius:22px;padding:16px;
-  min-height:88px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#51475a;
-}
-.progress-dots{display:flex;gap:7px;justify-content:center;margin-top:16px}
-.progress-dots i{width:10px;height:10px;border-radius:50%;background:#ff6aa5;animation:pulse 900ms infinite}
-.progress-dots i:nth-child(2){animation-delay:160ms;background:#ffc84a}
-.progress-dots i:nth-child(3){animation-delay:320ms;background:#148cf0}
-@keyframes pulse{50%{transform:scale(1.45);opacity:.55}}
-.prompt-tools{margin-top:12px}
-.prompt-preview{
-  display:none;margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:18px;
-  padding:12px;font-size:12px;line-height:1.4;color:#625667;white-space:pre-wrap;max-height:190px;overflow:auto;
-}
-.prompt-preview.show{display:block}
-
-@media(max-width:950px){
- .grid-layout{display:block}
- .desktop-only{display:none}
- .mobile-parents{display:grid;margin-bottom:12px}
- .parent img{height:190px}
- .portrait-card{min-height:560px}
- .actions{grid-template-columns:1fr}
- .feature-list{margin-bottom:14px}
-}
-</style>
-</head>
+body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;background:#fafaf8;color:#111;margin:0}
+.wrap{max-width:900px;margin:auto;padding:24px}
+.hero{text-align:center}
+h1{font-size:56px;margin:10px 0}
+.avatars{display:flex;justify-content:center;align-items:center;gap:16px;margin:20px 0}
+.avatars img{width:90px;height:90px;border-radius:50%;object-fit:cover}
+.card{background:white;border:1px solid #e8e8e8;border-radius:24px;padding:20px;margin:18px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+select,input,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #ddd}
+button{padding:14px 18px;border-radius:14px;border:none;background:#111;color:#fff;font-weight:700}
+.secondary{background:#eee;color:#111}
+#portrait{width:100%;max-width:650px;border-radius:24px;display:block;margin:auto}
+.loader{display:none;position:fixed;inset:0;background:rgba(250,250,248,.97);align-items:center;justify-content:center}
+.loader.show{display:flex}
+.fact{max-width:500px;text-align:center;font-size:22px}
+</style></head>
 <body>
-<div class="confetti" id="confetti"></div>
-<div class="toast" id="toast">Saved 💖</div>
-<div class="loader-screen" id="loaderScreen">
-  <div class="loader-card">
-    <div class="baby-loader"><span></span></div>
-    <h2>Designing your AI baby…</h2>
-    <p>This can take a little bit. We’re using both parent photos, your Mom/Dad trait picks, and your custom prompt.</p>
-    <div class="fact-box" id="loaderFact">Tiny toes loading…</div>
-    <div class="progress-dots"><i></i><i></i><i></i></div>
-  </div>
+<div class="loader" id="loader"><div class="fact"><h2>Generating your baby...</h2><div id="fact"></div></div></div>
+<div class="wrap">
+<div class="hero">
+<h1>Design the Baby</h1>
+<div class="avatars">
+<img src="assets/mom.jpg"><div>❤️</div><img src="assets/dad.jpg">
+</div>
 </div>
 
-<main class="page">
-  <section class="hero">
-    <h1>Design <span>the Baby</span></h1>
-    <div class="ribbon">AI baby shower game</div>
-    <div class="sub">Instant portrait by default. Optional AI uses Mom + Dad photos, your selected traits, and your custom prompt.</div>
-  </section>
+<div class="card">
+<div class="grid">
+<div><label>Hair Type</label><select id="hair"><option>Straight</option><option>Wavy</option><option>Curly</option></select></div>
+<div><label>Eye Size</label><select id="eyes"><option>Large</option><option>Medium</option><option>Small</option></select></div>
+<div><label>Smile</label><select id="smile"><option>Big Smile</option><option>Gentle Smile</option></select></div>
+<div><label>Cheeks</label><select id="cheeks"><option>Chubby</option><option>Normal</option></select></div>
+</div>
+<br>
+<label>Resemblance to Mom</label>
+<input type="range" min="0" max="100" value="50" id="momPercent">
+<br><br>
+<label>Future Personality</label>
+<select id="personality">
+<option>Future CEO</option><option>Artist</option><option>Athlete</option><option>Scientist</option><option>Bookworm</option><option>Troublemaker</option>
+</select>
+<br><br>
+<label>Anything else?</label>
+<textarea id="custom"></textarea>
+<br><br>
+<button id="gen">✨ Generate Baby</button>
+<button id="surprise" class="secondary">🎲 Surprise Me</button>
+</div>
 
-  <section class="mobile-parents">
-    <div class="card parent mom"><img src="assets/mom.jpg" alt="Mom"><div class="parent-label">♡ Mom</div></div>
-    <div class="card parent dad"><img src="assets/dad.jpg" alt="Dad"><div class="parent-label">💙 Dad</div></div>
-  </section>
-
-  <section class="grid-layout">
-    <aside>
-      <div class="card parent mom desktop-only"><img src="assets/mom.jpg" alt="Mom"><div class="parent-label">♡ Mom</div></div>
-      <div class="feature-list" id="features"></div>
-    </aside>
-
-    <section class="card main">
-      <div class="resemblance">
-        <h2>♡ Resemblance ♡</h2>
-        <div class="slider-row"><span>Mom</span><input id="slider" type="range" min="0" max="100" value="50"><span>Dad</span></div>
-        <div id="pct" class="pct">50% Mom · 50% Dad</div>
-      </div>
-
-      <div class="portrait-card">
-        <div class="portrait-title">Baby Prediction</div>
-        <div id="status" class="status">Generating AI baby...</div>
-        <img id="portrait" class="portrait" src="assets/portrait_mmmm.jpg" alt="Baby portrait">
-        <div class="actions">
-          <button id="curatedBtn" type="button" class="secondary">Use instant portrait</button>
-          <button id="aiBtn" type="button" class="ai">✨ Generate AI Baby</button>
-        </div>
-      </div>
-      <div class="field">
-        <label>Optional custom AI prompt</label>
-        <textarea id="customPrompt" placeholder="e.g. Make her more realistic, with Mom's expressive eyes, Dad's smile, soft black hair, wearing a cream onesie."></textarea>
-      </div>
-      <div class="prompt-tools">
-        <button id="promptPreviewBtn" type="button" class="secondary">Show AI prompt preview</button>
-        <div id="promptPreview" class="prompt-preview"></div>
-      </div>
-      <div class="note">
-        AI generation requires <b>OPENAI_API_KEY</b>. The AI endpoint sends Mom photo + Dad photo + your selections + your optional prompt.
-      </div>
-    </section>
-
-    <aside>
-      <div class="card parent dad desktop-only"><img src="assets/dad.jpg" alt="Dad"><div class="parent-label">💙 Dad</div></div>
-
-      <div class="card form">
-        <h2>Make Your Predictions! ✨</h2>
-        <div class="field"><label>Baby's name</label><input id="babyName" placeholder="Enter your guess"></div>
-        <div class="field"><label>Boy / Girl / Surprise</label>
-          <div class="gender" id="gender">
-            <button type="button" data-v="Boy">Boy</button>
-            <button type="button" data-v="Girl" class="active">Girl</button>
-            <button type="button" data-v="Surprise">Surprise</button>
-          </div>
-        </div>
-        <div class="field"><label>Birth date</label><input id="birthDate" placeholder="e.g. Oct 12"></div>
-        <div class="field"><label>Birth weight</label><input id="birthWeight" placeholder="e.g. 7 lb 2 oz"></div>
-        <div class="field"><label>Funny prediction / advice</label><textarea id="prediction" placeholder="e.g. Mom's eyes, Dad's smile, and already refusing bedtime."></textarea></div>
-        <div class="field"><label>Your name</label><input id="guestName" placeholder="Guest name"></div>
-        <button id="submit" type="button" class="primary">Submit My Guess ♡</button>
-      </div>
-
-      <div class="card gallery">
-        <div class="gallery-head"><h2>Gallery</h2><button id="clear" type="button" class="secondary">Clear</button></div>
-        <div id="entries"></div>
-      </div>
-    </aside>
-  </section>
-</main>
+<div class="card">
+<img id="portrait" src="assets/portrait_mmmm.jpg">
+</div>
+</div>
 
 <script>
-const state = {
-  eyes: "mom",
-  hair: "mom",
-  nose: "mom",
-  smile: "mom",
-  face: "mom",
-  gender: "Girl",
-  slider: 50,
-  portraitSrc: "assets/portrait_mmmm.jpg",
-  portraitType: "curated"
-};
-
-const featureDefs = [
-  ["eyes","👀 Eyes","Mom's Eyes","Dad's Eyes"],
-  ["hair","💇 Hair","Mom's Hair","Dad's Hair"],
-  ["nose","👃 Nose","Mom's Nose","Dad's Nose"],
-  ["smile","😊 Smile","Mom's Smile","Dad's Smile"],
-  ["face","🧒 Face Shape","Mom's Face","Dad's Face"]
+const facts=[
+"Blending Mom and Dad features...",
+"Picking the perfect baby smile...",
+"Designing tiny cheeks...",
+"Future troublemaker calibration in progress...",
+"Generating baby cuteness..."
 ];
-
-function renderFeatures(){
-  features.innerHTML = featureDefs.map(([key,title,momLabel,dadLabel]) => `
-    <div class="feature-card">
-      <div class="feature-title">${title}</div>
-      <div class="pick-row">
-        <button type="button" class="pick mom ${state[key]==='mom'?'active':''}" data-key="${key}" data-v="mom">
-          <img src="assets/mom_${key}.jpg" alt="${momLabel}">
-          <span>${momLabel}</span>
-        </button>
-        <button type="button" class="pick dad ${state[key]==='dad'?'active':''}" data-key="${key}" data-v="dad">
-          <img src="assets/dad_${key}.jpg" alt="${dadLabel}">
-          <span>${dadLabel}</span>
-        </button>
-      </div>
-    </div>
-  `).join("");
-
-  features.querySelectorAll(".pick").forEach(btn => {
-    btn.onclick = () => {
-      state[btn.dataset.key] = btn.dataset.v;
-      renderFeatures();
-      updateCuratedPortrait();
-    };
-  });
-}
-
-function curatedKey(){
-  const key = `${state.hair[0]}${state.eyes[0]}${state.nose[0]}${state.smile[0]}`;
-  const supported = ["mmmm","mmmd","mmdm","mdmm","dmmm","ddmm","dmdd","dddd"];
-  if (supported.includes(key)) return key;
-  const dadCount = [state.hair,state.eyes,state.nose,state.smile].filter(x => x === "dad").length;
-  if (dadCount === 0) return "mmmm";
-  if (dadCount === 1) return state.hair === "dad" ? "dmmm" : state.eyes === "dad" ? "mdmm" : state.nose === "dad" ? "mmdm" : "mmmd";
-  if (dadCount === 2) return state.hair === "dad" && state.eyes === "dad" ? "ddmm" : "dmdd";
-  return "dddd";
-}
-
-function updateCuratedPortrait(){
-  const src = `assets/portrait_${curatedKey()}.jpg`;
-  state.portraitSrc = src;
-  state.portraitType = "curated";
-  portrait.src = src;
-}
-
-function renderSlider(){
-  state.slider = Number(slider.value);
-  pct.textContent = `${100-state.slider}% Mom · ${state.slider}% Dad`;
-}
-slider.oninput = () => { renderSlider(); };
-
-gender.querySelectorAll("button").forEach(b => {
-  b.onclick = () => {
-    gender.querySelectorAll("button").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    state.gender = b.dataset.v;
-  };
-});
-
-curatedBtn.onclick = () => {
-  updateCuratedPortrait();
-  toast("Instant portrait selected");
-};
-
-const babyFacts = [
-  "Newborns can recognize familiar voices surprisingly quickly after birth.",
-  "Babies are drawn to high-contrast patterns, which is why bold black-and-white toys are so popular.",
-  "A baby's first social smile usually becomes one of the parents' favorite milestones.",
-  "Tiny fingers loading… newborns are born with a surprisingly strong grasp reflex.",
-  "Babies spend a lot of early life sleeping because their brains and bodies are growing fast.",
-  "Baby shower prediction games are basically family folklore with better UI.",
-  "The cutest guesses are usually the ones with unnecessary confidence.",
-  "Future bedtime negotiator loading…",
-  "This portrait is being blended from Mom photo, Dad photo, and your selected traits.",
-  "The AI is not predicting genetics — just making a fun baby-shower portrait."
-];
-
-let factTimer = null;
-let factIndex = 0;
-
+let timer;
 function startLoader(){
-  factIndex = Math.floor(Math.random() * babyFacts.length);
-  loaderFact.textContent = babyFacts[factIndex];
-  loaderScreen.classList.add("show");
-  factTimer = setInterval(() => {
-    factIndex = (factIndex + 1) % babyFacts.length;
-    loaderFact.textContent = babyFacts[factIndex];
-  }, 2800);
+loader.classList.add('show');
+let i=0; fact.textContent=facts[0];
+timer=setInterval(()=>{i=(i+1)%facts.length;fact.textContent=facts[i]},2500);
 }
-
-function stopLoader(){
-  loaderScreen.classList.remove("show");
-  if(factTimer) clearInterval(factTimer);
-  factTimer = null;
-}
-
-function buildRequestBody(){
-  return {
-    eyes: state.eyes === "mom" ? "mother" : "father",
-    hair: state.hair === "mom" ? "mother" : "father",
-    nose: state.nose === "mom" ? "mother" : "father",
-    smile: state.smile === "mom" ? "mother" : "father",
-    face: state.face === "mom" ? "mother" : "father",
-    gender: state.gender,
-    momPercent: 100 - state.slider,
-    customPrompt: customPrompt.value.trim()
-  };
-}
-
-function localPromptPreview(){
-  const body = buildRequestBody();
-  return `AI will send:
-- Mom photo: assets/mom.jpg
-- Dad photo: assets/dad.jpg
-- Eyes: ${body.eyes}
-- Hair: ${body.hair}
-- Nose: ${body.nose}
-- Smile: ${body.smile}
-- Face shape: ${body.face}
-- Resemblance: ${body.momPercent}% mother / ${100-body.momPercent}% father
-- Gender: ${body.gender}
-- Extra request: ${body.customPrompt || "none"}
-
-Style target:
-Realistic baby portrait, soft studio photography look, warm pastel background, cute and natural, not sketch/cartoon.`;
-}
-
-promptPreviewBtn.onclick = () => {
-  promptPreview.textContent = localPromptPreview();
-  promptPreview.classList.toggle("show");
+function stopLoader(){loader.classList.remove('show');clearInterval(timer);}
+function body(){
+return {
+gender:"girl",
+momPercent:+momPercent.value,
+eyes:eyes.value,
+hair:hair.value,
+smile:smile.value,
+face:"balanced",
+customPrompt:
+`Hair Type: ${hair.value}. Eye Size: ${eyes.value}. Smile: ${smile.value}. Cheeks: ${cheeks.value}. Personality: ${personality.value}. ${custom.value}`
 };
-
-aiBtn.onclick = async () => {
-  const status = document.getElementById("status");
-  aiBtn.disabled = true;
-  portrait.classList.add("loading");
-  status.classList.add("show");
-  status.textContent = "Generating AI baby...";
-  startLoader();
-
-  try {
-    const body = buildRequestBody();
-
-    const res = await fetch("/api/generate-baby", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(body)
-    });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "AI generation failed");
-
-    state.portraitSrc = data.imageDataUrl;
-    state.portraitType = "ai";
-    state.promptUsed = data.promptUsed || localPromptPreview();
-    portrait.src = data.imageDataUrl;
-    toast("AI baby generated ✨");
-  } catch (e) {
-    console.error(e);
-    toast(e.message || "AI generation failed");
-  } finally {
-    aiBtn.disabled = false;
-    portrait.classList.remove("loading");
-    status.classList.remove("show");
-    stopLoader();
-  }
+}
+gen.onclick=async()=>{
+startLoader();
+try{
+const r=await fetch('/api/generate-baby',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body())});
+const d=await r.json();
+if(!r.ok) throw new Error(d.error);
+portrait.src=d.imageDataUrl;
+}finally{stopLoader();}
 };
-
-function getEntries(){ return JSON.parse(localStorage.getItem("babyV5Entries") || "[]");}
-function setEntries(x){ localStorage.setItem("babyV5Entries", JSON.stringify(x));}
-function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));}
-
-function renderEntries(){
-  const data = getEntries();
-  if(!data.length){
-    entries.innerHTML = `<div class="meta">No guesses yet. First guest gets bragging rights ✨</div>`;
-    return;
-  }
-  entries.innerHTML = data.slice().reverse().map(e => `
-    <div class="entry">
-      <div class="entry-row">
-        <img src="${esc(e.portraitSrc)}" alt="Baby prediction">
-        <div>
-          <b>${esc(e.guestName || "Anonymous")}'s guess</b>
-          <div class="meta">
-            Name: ${esc(e.babyName || "?")} · ${esc(e.gender)} · Date: ${esc(e.birthDate || "?")} · Weight: ${esc(e.birthWeight || "?")}<br>
-            ${esc(e.eyes)} eyes · ${esc(e.hair)} hair · ${esc(e.nose)} nose · ${esc(e.smile)} smile · ${100-e.slider}% Mom/${e.slider}% Dad · ${esc(e.portraitType)}
-          </div>
-        </div>
-      </div>
-      <div class="quote">“${esc(e.prediction || "Cute, chaotic, perfect.")}”</div>
-    </div>
-  `).join("");
-}
-
-function toast(msg){
-  const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),1800);
-}
-
-function burst(){
-  const colors=["#ff5d9d","#1593ff","#ffc84a","#8ee6b7","#c9b3ff"];
-  confetti.innerHTML="";
-  for(let i=0;i<52;i++){
-    const el=document.createElement("i");
-    el.style.left=Math.random()*100+"vw";
-    el.style.background=colors[Math.floor(Math.random()*colors.length)];
-    el.style.animationDelay=Math.random()*250+"ms";
-    confetti.appendChild(el);
-  }
-  setTimeout(()=>confetti.innerHTML="",1600);
-}
-
-submit.onclick = () => {
-  const entry = {
-    eyes: state.eyes === "mom" ? "Mom's" : "Dad's",
-    hair: state.hair === "mom" ? "Mom's" : "Dad's",
-    nose: state.nose === "mom" ? "Mom's" : "Dad's",
-    smile: state.smile === "mom" ? "Mom's" : "Dad's",
-    face: state.face === "mom" ? "Mom's" : "Dad's",
-    slider: state.slider,
-    gender: state.gender,
-    portraitSrc: state.portraitSrc,
-    portraitType: state.portraitType,
-    promptUsed: state.promptUsed || "",
-    babyName: babyName.value.trim(),
-    birthDate: birthDate.value.trim(),
-    birthWeight: birthWeight.value.trim(),
-    prediction: prediction.value.trim(),
-    guestName: guestName.value.trim(),
-    createdAt: new Date().toISOString()
-  };
-
-  const data = getEntries();
-  data.push(entry);
-  setEntries(data);
-  renderEntries();
-  burst();
-  toast("Guess saved 💖");
+surprise.onclick=()=>{
+hair.selectedIndex=Math.floor(Math.random()*hair.options.length);
+eyes.selectedIndex=Math.floor(Math.random()*eyes.options.length);
+smile.selectedIndex=Math.floor(Math.random()*smile.options.length);
+cheeks.selectedIndex=Math.floor(Math.random()*cheeks.options.length);
+personality.selectedIndex=Math.floor(Math.random()*personality.options.length);
+momPercent.value=Math.floor(Math.random()*101);
+gen.click();
 };
-
-clear.onclick = () => {
-  if(confirm("Clear guesses saved on this device?")){
-    setEntries([]);
-    renderEntries();
-    toast("Gallery cleared");
-  }
-};
-
-renderFeatures();
-renderSlider();
-updateCuratedPortrait();
-renderEntries();
-
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
-}
 </script>
-</body>
-</html>
+</body></html>
