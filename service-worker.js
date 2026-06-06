@@ -1,4 +1,4 @@
-const CACHE_NAME = "design-the-baby-v4";
+const CACHE_NAME = "design-the-baby-v5";
 const FILES = [
   "./",
   "./index.html",
@@ -15,7 +15,15 @@ const FILES = [
   "./assets/mom_smile.jpg",
   "./assets/dad_smile.jpg",
   "./assets/mom_face.jpg",
-  "./assets/dad_face.jpg"
+  "./assets/dad_face.jpg",
+  "./assets/portrait_mmmm.jpg",
+  "./assets/portrait_mmmd.jpg",
+  "./assets/portrait_mmdm.jpg",
+  "./assets/portrait_mdmm.jpg",
+  "./assets/portrait_dmmm.jpg",
+  "./assets/portrait_ddmm.jpg",
+  "./assets/portrait_dmdd.jpg",
+  "./assets/portrait_dddd.jpg"
 ];
 
 self.addEventListener("install", event => {
@@ -23,5 +31,6 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("fetch", event => {
+  if (event.request.url.includes("/api/")) return;
   event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));
 });

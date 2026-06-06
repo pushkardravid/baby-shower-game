@@ -5,5 +5,5 @@
   "display": "standalone",
   "background_color": "#fff7fb",
   "theme_color": "#ffd4e6",
-  "description": "A cute baby shower prediction game."
+  "description": "A baby shower prediction game with optional AI baby portraits."
 }
