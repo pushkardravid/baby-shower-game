@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Baby Prediction Admin</title>
+<style>
+:root{
+  --bg:#fff7f0;--bg2:#fff0f7;--ink:#241d28;--muted:#756975;--accent:#ff76aa;--accent2:#ffb174;
+  --line:rgba(70,45,66,.12);--card:#fffefa;--shadow:0 18px 45px rgba(112,65,95,.13)
+}
+*{box-sizing:border-box}
+body{
+  margin:0;color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(150deg,var(--bg),var(--bg2) 55%,#f4efff);min-height:100vh
+}
+.page{max-width:1200px;margin:0 auto;padding:24px 16px 60px}
+.hero{display:grid;gap:16px;margin:12px 0 20px}
+h1{font-size:clamp(38px,6vw,72px);line-height:.9;letter-spacing:-2px;margin:0}
+.sub{font-size:18px;color:var(--muted);font-weight:750}
+.card{background:rgba(255,255,255,.86);border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.login{max-width:440px;margin:12vh auto}
+input{width:100%;border:1px solid var(--line);border-radius:18px;padding:15px;font:inherit;margin:10px 0;background:white}
+button{border:0;border-radius:18px;background:#111;color:white;padding:13px 16px;font-weight:1000;font:inherit;cursor:pointer}
+button.secondary{background:white;color:#241d28;border:1px solid var(--line)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.metric b{font-size:30px;display:block}
+.metric span{color:var(--muted);font-weight:850}
+.section{margin-top:22px}
+.sectionHead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.sectionHead h2{margin:0;font-size:28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.tile{background:white;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.tile img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#f8eef4}
+.tileBody{padding:12px}
+.tileBody b{display:block;font-size:16px}
+.meta{font-size:13px;color:var(--muted);line-height:1.35;margin-top:4px}
+.statsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.statCard h3{margin:0 0 12px;font-size:20px}
+.barRow{margin:10px 0}
+.barTop{display:flex;justify-content:space-between;font-weight:900;font-size:14px;gap:10px}
+.bar{height:12px;border-radius:999px;background:rgba(0,0,0,.08);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px}
+.consensusWrap{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:center}
+.consensusImg{width:100%;aspect-ratio:1;object-fit:cover;border-radius:24px;background:white;border:8px solid white;box-shadow:0 14px 35px rgba(0,0,0,.12)}
+.hidden{display:none!important}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(90px);background:#211b24;color:white;padding:12px 15px;border-radius:999px;font-weight:1000;transition:.3s;z-index:20}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.modal{position:fixed;inset:0;background:rgba(25,18,28,.72);display:none;align-items:center;justify-content:center;z-index:10;padding:18px}
+.modal.show{display:flex}
+.modalCard{width:min(900px,100%);background:white;border-radius:28px;padding:14px}
+.modalCard img{width:100%;max-height:78vh;object-fit:contain;border-radius:18px}
+@media(max-width:800px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .consensusWrap{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal" onclick="modal.classList.remove('show')"><div class="modalCard"><img id="modalImg"></div></div>
+
+<main class="page">
+  <section id="login" class="card login">
+    <h1>Admin</h1>
+    <p class="sub">Enter the admin password to view predictions.</p>
+    <input id="password" type="password" placeholder="Admin password">
+    <button id="loginBtn">Open dashboard</button>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="hero">
+      <h1>Baby Prediction Dashboard</h1>
+      <div class="sub">Gallery, consensus baby, and live stats from guest predictions.</div>
+      <div class="actions">
+        <button id="refreshBtn">Refresh</button>
+        <button id="csvBtn" class="secondary">Export CSV</button>
+      </div>
+    </div>
+
+    <section class="metrics">
+      <div class="card metric"><b id="totalCount">0</b><span>Predictions</span></div>
+      <div class="card metric"><b id="pinkCount">0</b><span>Team Pink</span></div>
+      <div class="card metric"><b id="blueCount">0</b><span>Team Blue</span></div>
+      <div class="card metric"><b id="imageCount">0</b><span>Images</span></div>
+    </section>
+
+    <section class="section card">
+      <div class="sectionHead">
+        <div>
+          <h2>Community Consensus Baby</h2>
+          <div class="meta">Generates a new baby from up to 12 latest guest baby images.</div>
+        </div>
+        <button id="consensusBtn">✨ Generate Consensus</button>
+      </div>
+      <div class="consensusWrap">
+        <img id="consensusImg" class="consensusImg" alt="Consensus baby">
+        <div>
+          <h3 id="consensusTitle">No consensus generated yet</h3>
+          <p class="meta" id="consensusMeta">Run this after a few guests have submitted predictions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sectionHead">
+        <h2>Prediction Stats</h2>
+      </div>
+      <div id="stats" class="statsGrid"></div>
+    </section>
+
+    <section class="section">
+      <div class="sectionHead">
+        <h2>Baby Gallery</h2>
+      </div>
+      <div id="gallery" class="grid"></div>
+    </section>
+  </section>
+</main>
+
+<script>
+let adminPassword = sessionStorage.getItem("adminPassword") || "";
+let predictions = [];
+
+function toastMsg(msg){
+  toast.textContent = msg;
+  toast.classList.add("show");
+  setTimeout(()=>toast.classList.remove("show"), 1800);
+}
+function labelValue(v){
+  if(!v) return "Unknown";
+  const map = {mother:"Mom", father:"Dad", both:"Both", girl:"Girl", boy:"Boy", surprise:"Surprise", pink:"Team Pink", blue:"Team Blue"};
+  return map[v] || String(v);
+}
+function getGame(row, key){
+  return row.game2_responses?.[key] || "Unknown";
+}
+async function loadData(){
+  const res = await fetch("/api/admin-data", { headers: { "x-admin-password": adminPassword }});
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.error || "Could not load data");
+  predictions = data.predictions || [];
+  render();
+}
+function countBy(items, fn){
+  const out = {};
+  for(const item of items){
+    const key = fn(item) || "Unknown";
+    out[key] = (out[key] || 0) + 1;
+  }
+  return out;
+}
+function renderMetric(){
+  totalCount.textContent = predictions.length;
+  imageCount.textContent = predictions.filter(p=>p.image_url).length;
+  pinkCount.textContent = predictions.filter(p=>p.game2_responses?.theme === "pink").length;
+  blueCount.textContent = predictions.filter(p=>p.game2_responses?.theme === "blue").length;
+}
+function renderGallery(){
+  gallery.innerHTML = predictions.map(p => `
+    <article class="tile">
+      ${p.image_url ? `<img src="${p.image_url}" onclick="openModal('${p.image_url.replace(/'/g, "%27")}')">` : `<div style="aspect-ratio:1;background:#fff0f7"></div>`}
+      <div class="tileBody">
+        <b>${escapeHtml(p.guest_name || "Unknown")}</b>
+        <div class="meta">
+          Baby calls me: ${escapeHtml(p.baby_calls_me || "?")}<br>
+          ${labelValue(p.gender_guess)} · ${p.mom_percent ?? "?"}% Mom<br>
+          ${new Date(p.created_at).toLocaleString()}
+        </div>
+      </div>
+    </article>
+  `).join("");
+}
+function statCard(title, counts){
+  const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const total = entries.reduce((s, [,v])=>s+v, 0) || 1;
+  return `<div class="card statCard"><h3>${title}</h3>${
+    entries.map(([name,count])=>{
+      const pct = Math.round((count/total)*100);
+      return `<div class="barRow"><div class="barTop"><span>${escapeHtml(labelValue(name))}</span><span>${count} · ${pct}%</span></div><div class="bar"><i style="width:${pct}%"></i></div></div>`;
+    }).join("")
+  }</div>`;
+}
+function renderStats(){
+  const statsHtml = [
+    statCard("Gender", countBy(predictions, p=>p.gender_guess)),
+    statCard("Eyes", countBy(predictions, p=>p.eyes_guess)),
+    statCard("Smile", countBy(predictions, p=>p.smile_guess)),
+    statCard("Future Calling", countBy(predictions, p=>getGame(p,"future"))),
+    statCard("Humor", countBy(predictions, p=>getGame(p,"humor"))),
+    statCard("Musical Tendencies", countBy(predictions, p=>getGame(p,"tendencies"))),
+    statCard("Musical Destiny", countBy(predictions, p=>getGame(p,"destiny"))),
+    statCard("Member Of", countBy(predictions, p=>getGame(p,"member"))),
+    statCard("Entertainment", countBy(predictions, p=>getGame(p,"entertainment"))),
+    statCard("Marathi", countBy(predictions, p=>getGame(p,"marathi"))),
+    statCard("Vacation", countBy(predictions, p=>getGame(p,"vacation"))),
+    statCard("School", countBy(predictions, p=>getGame(p,"school"))),
+    statCard("Theme", countBy(predictions, p=>p.game2_responses?.theme))
+  ].join("");
+  stats.innerHTML = statsHtml;
+}
+function render(){
+  renderMetric();
+  renderGallery();
+  renderStats();
+}
+function escapeHtml(s){
+  return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function openModal(url){
+  modalImg.src = url;
+  modal.classList.add("show");
+}
+function toCsv(){
+  const header = ["guest_name","baby_calls_me","gender_guess","eyes_guess","smile_guess","mom_percent","message","image_url","future","humor","tendencies","destiny","member","entertainment","marathi","vacation","school","theme","created_at"];
+  const rows = predictions.map(p => [
+    p.guest_name,p.baby_calls_me,p.gender_guess,p.eyes_guess,p.smile_guess,p.mom_percent,p.message,p.image_url,
+    getGame(p,"future"),getGame(p,"humor"),getGame(p,"tendencies"),getGame(p,"destiny"),getGame(p,"member"),getGame(p,"entertainment"),getGame(p,"marathi"),getGame(p,"vacation"),getGame(p,"school"),p.game2_responses?.theme,p.created_at
+  ]);
+  const csv = [header, ...rows].map(row => row.map(cell => `"${String(cell ?? "").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "baby-predictions.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+async function generateConsensus(){
+  consensusBtn.disabled = true;
+  consensusBtn.textContent = "Generating...";
+  try{
+    const res = await fetch("/api/generate-consensus-baby", {
+      method:"POST",
+      headers: { "x-admin-password": adminPassword }
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || "Consensus failed");
+    consensusImg.src = data.imageUrl || data.imageDataUrl;
+    consensusTitle.textContent = "Consensus Baby Generated ✨";
+    consensusMeta.textContent = `Generated from ${data.predictionCount} prediction images.`;
+    toastMsg("Consensus baby generated");
+  }catch(e){
+    toastMsg(e.message || "Consensus failed");
+  }finally{
+    consensusBtn.disabled = false;
+    consensusBtn.textContent = "✨ Generate Consensus";
+  }
+}
+
+loginBtn.onclick = async () => {
+  adminPassword = password.value.trim();
+  sessionStorage.setItem("adminPassword", adminPassword);
+  try{
+    await loadData();
+    login.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+  }catch(e){
+    toastMsg(e.message || "Login failed");
+  }
+};
+refreshBtn.onclick = async () => { await loadData(); toastMsg("Refreshed"); };
+csvBtn.onclick = toCsv;
+consensusBtn.onclick = generateConsensus;
+
+if(adminPassword){
+  loadData().then(()=>{
+    login.classList.add("hidden");
+    dashboard.classList.remove("hidden");
+  }).catch(()=>{});
+}
+</script>
+</body>
+</html>
