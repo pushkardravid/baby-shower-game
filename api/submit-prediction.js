@@ -11,32 +11,31 @@ function dataUrlToBuffer(dataUrl) {
   if (!match) return null;
   return { mimeType: match[1], buffer: Buffer.from(match[2], "base64") };
 }
+async function uploadFallbackImage(imageDataUrl) {
+  const parsed = dataUrlToBuffer(imageDataUrl);
+  if (!parsed) return null;
+  const ext = parsed.mimeType.includes("png") ? "png" : "jpg";
+  const filePath = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
+  const upload = await supabase.storage.from("baby-images").upload(filePath, parsed.buffer, {
+    contentType: parsed.mimeType,
+    upsert: false
+  });
+  if (upload.error) throw upload.error;
+  return supabase.storage.from("baby-images").getPublicUrl(filePath).data.publicUrl;
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Use POST" });
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return res.status(500).json({ error: "Supabase env vars are not configured." });
   }
-
   try {
     const body = req.body || {};
     const guestName = cleanText(body.guestName, 120);
     if (!guestName) return res.status(400).json({ error: "Guest name is required." });
 
     let imageUrl = cleanText(body.imageUrl, 2000);
-    if (!imageUrl && body.imageDataUrl) {
-      const parsed = dataUrlToBuffer(body.imageDataUrl);
-      if (parsed) {
-        const ext = parsed.mimeType.includes("png") ? "png" : "jpg";
-        const filePath = `${Date.now()}-${crypto.randomUUID()}.${ext}`;
-        const upload = await supabase.storage.from("baby-images").upload(filePath, parsed.buffer, {
-          contentType: parsed.mimeType,
-          upsert: false
-        });
-        if (upload.error) throw upload.error;
-        imageUrl = supabase.storage.from("baby-images").getPublicUrl(filePath).data.publicUrl;
-      }
-    }
+    if (!imageUrl && body.imageDataUrl) imageUrl = await uploadFallbackImage(body.imageDataUrl);
 
     const row = {
       guest_name: guestName,
