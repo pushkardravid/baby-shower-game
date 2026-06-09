@@ -1,254 +1,71 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffd6e7">
-<link rel="manifest" href="manifest.json">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffd6e7"><link rel="manifest" href="manifest.json">
 <title>Mom's Eyes? Dad's Smile?</title>
 <style>
-:root{
-  --bg:#fff7f0; --bg2:#fff0f7; --ink:#28202a; --muted:#796d76;
-  --pink:#ff76aa; --peach:#ffb174; --lav:#d9c7ff; --line:rgba(70,45,66,.12);
-  --card:#fffefa; --shadow:0 18px 45px rgba(112,65,95,.16);
-  --safe-bottom:env(safe-area-inset-bottom,0px);
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{
-  margin:0;color:var(--ink);
-  font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:
-    radial-gradient(circle at 14% 9%,#fff 0 10px,transparent 11px),
-    radial-gradient(circle at 88% 12%,#fff 0 8px,transparent 9px),
-    linear-gradient(150deg,var(--bg),var(--bg2) 55%,#f4efff);
-  overflow:hidden;
-}
+:root{--bg:#fff7f0;--bg2:#fff0f7;--ink:#28202a;--muted:#796d76;--pink:#ff76aa;--peach:#ffb174;--line:rgba(70,45,66,.12);--shadow:0 18px 45px rgba(112,65,95,.16);--safe-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{height:100%}body{margin:0;color:var(--ink);font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 14% 9%,#fff 0 10px,transparent 11px),radial-gradient(circle at 88% 12%,#fff 0 8px,transparent 9px),linear-gradient(150deg,var(--bg),var(--bg2) 55%,#f4efff);overflow:hidden}
 .app{height:100dvh;max-width:520px;margin:0 auto;position:relative;overflow:hidden;background:rgba(255,255,255,.16)}
-.screen{
-  position:absolute;inset:0;padding:22px 18px calc(92px + var(--safe-bottom));
-  display:none;flex-direction:column;justify-content:center;gap:18px;
-  animation:enter .28s ease-out;
-}
-.screen.active{display:flex}
-@keyframes enter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
-.topbar{position:absolute;top:14px;left:18px;right:18px;display:flex;align-items:center;justify-content:space-between;z-index:5}
-.progress{height:8px;background:rgba(40,32,42,.08);border-radius:999px;overflow:hidden;flex:1;margin-right:12px}
-.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--peach));border-radius:999px;transition:.25s}
-.skip{border:0;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-weight:900;color:#6f626d}
-.hero{text-align:center}
-.avatars{display:flex;align-items:center;justify-content:center;gap:13px;margin:12px 0 8px}
-.avatars img{width:76px;height:76px;border-radius:50%;object-fit:cover;border:4px solid white;box-shadow:0 10px 24px rgba(0,0,0,.12)}
-.heart{font-size:28px;filter:drop-shadow(0 4px 8px rgba(255,118,170,.25))}
-h1{font-size:clamp(44px,11vw,64px);letter-spacing:-2px;line-height:.9;margin:8px 0}
-h2{font-size:clamp(34px,8.5vw,48px);letter-spacing:-1.2px;line-height:1;margin:0;text-align:left}
-.subtitle{font-size:18px;color:var(--muted);line-height:1.35;font-weight:750}
-.center{text-align:center}
-.cta{
-  border:0;border-radius:24px;padding:18px 22px;background:linear-gradient(135deg,var(--pink),var(--peach));
-  color:white;font-size:20px;font-weight:1000;box-shadow:0 16px 35px rgba(255,118,170,.32);width:100%
-}
-.cardbtn{
-  border:1px solid var(--line);background:rgba(255,255,255,.9);border-radius:28px;padding:18px;text-align:left;
-  box-shadow:0 10px 24px rgba(0,0,0,.06);color:var(--ink);font:inherit;min-height:92px;
-}
-.cardbtn strong{display:block;font-size:22px;line-height:1.05;margin-bottom:6px}
-.cardbtn span{display:block;color:var(--muted);font-weight:750;line-height:1.25}
-.cardbtn:active{transform:scale(.985)}
-.cardbtn.selected{border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,118,170,.16),0 10px 24px rgba(0,0,0,.06)}
-.cards{display:grid;gap:12px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid2 .cardbtn{min-height:118px}
-.sliderCard{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:30px;padding:24px 18px;box-shadow:var(--shadow)}
-.rangeLabels{display:flex;justify-content:space-between;font-weight:1000;color:#6d606b;margin-bottom:16px}
-input[type=range]{width:100%;accent-color:var(--pink)}
-.pct{text-align:center;font-size:22px;font-weight:1000;margin-top:16px}
-textarea{
-  width:100%;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.9);
-  padding:18px;font:inherit;font-size:18px;outline:none;color:var(--ink);box-shadow:0 10px 24px rgba(0,0,0,.05);
-  min-height:168px;resize:none
-}
-.examples{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:white;border-radius:999px;padding:9px 12px;font-size:13px;font-weight:900;color:#6d606b}
-.loaderScreen{text-align:center;align-items:center}
-.babyPulse{width:120px;height:120px;margin:0 auto;border-radius:50%;background:linear-gradient(135deg,#ffd8bd,#ffc1dc);border:8px solid white;box-shadow:0 16px 35px rgba(0,0,0,.12);animation:bob 1.2s ease-in-out infinite;position:relative}
-.babyPulse:before,.babyPulse:after{content:"";position:absolute;top:46px;width:13px;height:13px;background:#33252b;border-radius:50%}
-.babyPulse:before{left:34px}.babyPulse:after{right:34px}
-.babyPulse i{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:36px;height:18px;border-bottom:5px solid #9b455b;border-radius:0 0 40px 40px}
-@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
-.loaderFact{font-size:22px;font-weight:900;line-height:1.25;min-height:60px}
-.reveal{padding:18px 14px calc(92px + var(--safe-bottom));justify-content:flex-start}
-.reveal h2{text-align:center;margin-top:16px}
-.babyImg{width:100%;height:min(68dvh,620px);object-fit:cover;border-radius:34px;border:8px solid white;box-shadow:0 24px 60px rgba(80,40,70,.25);background:white}
-.summary{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
-.bottomNav{
-  position:absolute;left:14px;right:14px;bottom:calc(12px + var(--safe-bottom));display:none;gap:10px;z-index:10;
-  background:rgba(255,255,255,.78);border:1px solid var(--line);backdrop-filter:blur(14px);
-  border-radius:26px;padding:10px;box-shadow:0 14px 40px rgba(0,0,0,.12)
-}
-.bottomNav.show{display:flex}
-.bottomNav button{flex:1;border:0;border-radius:18px;padding:14px 10px;font-weight:1000;background:#fff;color:#312733}
-.bottomNav button.primaryMini{background:#111;color:white}
-.toast{position:absolute;left:50%;bottom:calc(96px + var(--safe-bottom));transform:translateX(-50%) translateY(80px);background:#211b24;color:white;padding:12px 15px;border-radius:999px;font-weight:950;z-index:20;transition:.3s;white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.doneCard{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:32px;padding:26px;text-align:center;box-shadow:var(--shadow)}
-.doneCard h2{text-align:center}
-.confetti{position:absolute;inset:0;z-index:30;pointer-events:none;overflow:hidden}
-.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:4px;animation:fall 1200ms ease-in forwards}
-@keyframes fall{to{transform:translateY(110dvh) rotate(760deg);opacity:0}}
-@media(min-width:700px){.app{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
-</style>
-</head>
-<body>
-<div class="app">
-  <div class="confetti" id="confetti"></div>
-  <div class="toast" id="toast">Saved</div>
-  <div class="topbar" id="topbar" style="display:none">
-    <div class="progress"><i id="prog"></i></div>
-    <button class="skip" id="backBtn">Back</button>
-  </div>
-
-  <section class="screen active" id="welcome">
-    <div class="hero">
-      <div class="avatars"><img src="assets/mom.jpg" alt="Mom"><div class="heart">❤️</div><img src="assets/dad.jpg" alt="Dad"></div>
-      <h1>Mom's Eyes?<br>Dad's Smile?</h1>
-      <div class="subtitle">What do you think Baby will look like?</div>
-    </div>
-    <button class="cta" id="startBtn">👶 Hi Baby!</button>
-  </section>
-
-  <section class="screen" id="question"></section>
-
-  <section class="screen loaderScreen" id="loading">
-    <div class="babyPulse"><i></i></div>
-    <h2 class="center">Getting Baby Ready...</h2>
-    <div class="loaderFact" id="loaderFact">Borrowing Mom's eyes...</div>
-  </section>
-
-  <section class="screen reveal" id="reveal">
-    <h2>✨ Hi Baby!</h2>
-    <img class="babyImg" id="babyImg" alt="AI baby prediction">
-    <div class="summary" id="revealSummary"></div>
-  </section>
-
-  <section class="screen" id="game2"></section>
-
-  <section class="screen" id="done">
-    <div class="doneCard">
-      <h2>Predictions Saved 🎉</h2>
-      <p class="subtitle">Your baby forecast is locked in.</p>
-      <button class="cta" id="homeBtn">🏠 Home</button>
-    </div>
-  </section>
-
-  <nav class="bottomNav" id="bottomNav">
-    <button id="navHome">🏠 Home</button>
-    <button class="primaryMini" id="navPredictions">🎲 Baby Predictions</button>
-  </nav>
+.screen{position:absolute;inset:0;padding:22px 18px calc(92px + var(--safe-bottom));display:none;flex-direction:column;justify-content:center;gap:18px;animation:enter .28s ease-out}.screen.active{display:flex}@keyframes enter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+.topbar{position:absolute;top:14px;left:18px;right:18px;display:flex;align-items:center;justify-content:space-between;z-index:5}.progress{height:8px;background:rgba(40,32,42,.08);border-radius:999px;overflow:hidden;flex:1;margin-right:12px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--peach));border-radius:999px;transition:.25s}.skip{border:0;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-weight:900;color:#6f626d}
+.hero{text-align:center}.avatars{display:flex;align-items:center;justify-content:center;gap:13px;margin:12px 0 8px}.avatars img{width:76px;height:76px;border-radius:50%;object-fit:cover;border:4px solid white;box-shadow:0 10px 24px rgba(0,0,0,.12)}.heart{font-size:28px}
+h1{font-size:clamp(44px,11vw,64px);letter-spacing:-2px;line-height:.9;margin:8px 0}h2{font-size:clamp(34px,8.5vw,48px);letter-spacing:-1.2px;line-height:1;margin:0;text-align:left}.subtitle{font-size:18px;color:var(--muted);line-height:1.35;font-weight:750}.center{text-align:center}
+.cta{border:0;border-radius:24px;padding:18px 22px;background:linear-gradient(135deg,var(--pink),var(--peach));color:white;font-size:20px;font-weight:1000;box-shadow:0 16px 35px rgba(255,118,170,.32);width:100%}
+.cardbtn{border:1px solid var(--line);background:rgba(255,255,255,.9);border-radius:28px;padding:18px;text-align:left;box-shadow:0 10px 24px rgba(0,0,0,.06);color:var(--ink);font:inherit;min-height:92px}.cardbtn strong{display:block;font-size:22px;line-height:1.05;margin-bottom:6px}.cardbtn span{display:block;color:var(--muted);font-weight:750;line-height:1.25}.cardbtn.selected{border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,118,170,.16),0 10px 24px rgba(0,0,0,.06)}.cards{display:grid;gap:12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid2 .cardbtn{min-height:118px}
+.sliderCard{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:30px;padding:24px 18px;box-shadow:var(--shadow)}.rangeLabels{display:flex;justify-content:space-between;font-weight:1000;color:#6d606b;margin-bottom:16px}input[type=range]{width:100%;accent-color:var(--pink)}.pct{text-align:center;font-size:22px;font-weight:1000;margin-top:16px}
+input,textarea{width:100%;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.9);padding:18px;font:inherit;font-size:18px;outline:none;color:var(--ink);box-shadow:0 10px 24px rgba(0,0,0,.05)}textarea{min-height:168px;resize:none}.examples{display:flex;flex-wrap:wrap;gap:8px}.chip{border:1px solid var(--line);background:white;border-radius:999px;padding:9px 12px;font-size:13px;font-weight:900;color:#6d606b}
+.loaderScreen{text-align:center;align-items:center}.babyPulse{width:120px;height:120px;margin:0 auto;border-radius:50%;background:linear-gradient(135deg,#ffd8bd,#ffc1dc);border:8px solid white;box-shadow:0 16px 35px rgba(0,0,0,.12);animation:bob 1.2s ease-in-out infinite;position:relative}.babyPulse:before,.babyPulse:after{content:"";position:absolute;top:46px;width:13px;height:13px;background:#33252b;border-radius:50%}.babyPulse:before{left:34px}.babyPulse:after{right:34px}.babyPulse i{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:36px;height:18px;border-bottom:5px solid #9b455b;border-radius:0 0 40px 40px}@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}.loaderFact{font-size:22px;font-weight:900;line-height:1.25;min-height:60px}
+.reveal{padding:18px 14px calc(92px + var(--safe-bottom));justify-content:flex-start}.reveal h2{text-align:center;margin-top:16px}.babyImg{width:100%;height:min(68dvh,620px);object-fit:cover;border-radius:34px;border:8px solid white;box-shadow:0 24px 60px rgba(80,40,70,.25);background:white}.summary{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
+.bottomNav{position:absolute;left:14px;right:14px;bottom:calc(12px + var(--safe-bottom));display:none;gap:10px;z-index:10;background:rgba(255,255,255,.78);border:1px solid var(--line);backdrop-filter:blur(14px);border-radius:26px;padding:10px;box-shadow:0 14px 40px rgba(0,0,0,.12)}.bottomNav.show{display:flex}.bottomNav button{flex:1;border:0;border-radius:18px;padding:14px 10px;font-weight:1000;background:#fff;color:#312733}.bottomNav button.primaryMini{background:#111;color:white}
+.toast{position:absolute;left:50%;bottom:calc(96px + var(--safe-bottom));transform:translateX(-50%) translateY(80px);background:#211b24;color:white;padding:12px 15px;border-radius:999px;font-weight:950;z-index:20;transition:.3s;white-space:nowrap}.toast.show{transform:translateX(-50%) translateY(0)}.doneCard{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:32px;padding:26px;text-align:center;box-shadow:var(--shadow)}.doneCard h2{text-align:center}
+.confetti{position:absolute;inset:0;z-index:30;pointer-events:none;overflow:hidden}.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:4px;animation:fall 1200ms ease-in forwards}@keyframes fall{to{transform:translateY(110dvh) rotate(760deg);opacity:0}}
+</style></head>
+<body><div class="app">
+<div class="confetti" id="confetti"></div><div class="toast" id="toast">Saved</div>
+<div class="topbar" id="topbar" style="display:none"><div class="progress"><i id="prog"></i></div><button class="skip" id="backBtn">Back</button></div>
+<section class="screen active" id="welcome"><div class="hero"><div class="avatars"><img src="assets/mom.jpg"><div class="heart">❤️</div><img src="assets/dad.jpg"></div><h1>Mom's Eyes?<br>Dad's Smile?</h1><div class="subtitle">What do you think Baby will look like?</div></div><button class="cta" id="startBtn">👶 Hi Baby!</button></section>
+<section class="screen" id="question"></section>
+<section class="screen loaderScreen" id="loading"><div class="babyPulse"><i></i></div><h2 class="center">Getting Baby Ready...</h2><div class="loaderFact" id="loaderFact">Borrowing Mom's eyes...</div></section>
+<section class="screen reveal" id="reveal"><h2>✨ Hi Baby!</h2><img class="babyImg" id="babyImg"><div class="summary" id="revealSummary"></div></section>
+<section class="screen" id="game2"></section>
+<section class="screen" id="done"><div class="doneCard"><h2>Predictions Saved 🎉</h2><p class="subtitle">Your baby forecast is locked in.</p><button class="cta" id="homeBtn">🏠 Home</button></div></section>
+<nav class="bottomNav" id="bottomNav"><button id="navHome">🏠 Home</button><button class="primaryMini" id="navPredictions">🎲 Baby Predictions</button></nav>
 </div>
-
 <script>
-const state = { gender:null, eyes:null, smile:null, momPercent:50, message:"", image:"", game2:{} };
-
-const q1 = [
-  { key:"gender", title:"💖 First things first...", subtitle:"Boy or Girl?", choices:[
-      {label:"👦 Boy", value:"boy"}, {label:"👧 Girl", value:"girl"}, {label:"🎁 Surprise Me", value:"surprise"}]},
-  { key:"eyes", title:"👀 Whose eyes?", choices:[
-      {label:"😍 Mom's Eyes", sub:"Family Premium Edition", value:"mother"},
-      {label:"👀 Dad's Eyes", sub:"Available While Supplies Last", value:"father"},
-      {label:"🤝 A Little Bit Of Both", value:"both"}]},
-  { key:"smile", title:"😊 That smile?", choices:[
-      {label:"💖 Mom's Smile", value:"mother"}, {label:"😎 Dad's Smile", value:"father"}, {label:"🤝 A Little Bit Of Both", value:"both"}]},
-  { key:"resemblance", type:"slider", title:"❤️ Overall resemblance?" },
-  { key:"message", type:"message", title:"💌 Leave Baby A Message" }
-];
-
-const game2Questions = [
-  {key:"future", title:"🚀 Future Calling?", choices:["💻 Amazon L5 SDE","🎤 Singing Ke Baadshah","🚩 Roadies Contestant","💃 Dance Dance Dance"]},
-  {key:"humor", title:"😂 Whose Humor?", choices:[["💁 Mom's Humor","Born 28 Years Old"],["🤣 Dad's Humor","100 Taka Tunch Maal"]]},
-  {key:"tendencies", title:"🎤 Musical Tendencies?", choices:[["🎶 Joins Shikha's Impromptu Singings",""],["🎧 Desi Hip Hop Needs My Support","And They Shall Have It"]]},
-  {key:"destiny", title:"🎵 Musical Destiny?", choices:[["🎤 Lyrics 9000","Sur 9"],["🎼 Lyrics 9","Sur 9000"]]},
-  {key:"member", title:"🎭 Most Likely To Be A Member Of?", choices:["🎤 Proud Himesh Cap Holder","😎 Sanjay Dutt Gunda Badmaash Club"]},
-  {key:"entertainment", title:"📺 Entertainment Preference?", choices:["☕ The Office","🔍 Crime Procedural"]},
-  {key:"marathi", title:"🗣️ Marathi Skills?", choices:["📖 Proficient In Marathi","🤔 Claims To Have Studied Marathi"]},
-  {key:"vacation", title:"🌴 Dream Vacation?", choices:["👜 Luxury Shopping","🌊 Life Started In Water"]},
-  {key:"school", title:"📚 School Reputation?", choices:["⭐ Teacher's Pet","⭐ Teacher's Pet"]}
-];
-
-let step=0, game2Step=0, loaderTimer=null;
-const screens=["welcome","question","loading","reveal","game2","done"];
-
-function show(id){
-  screens.forEach(s=>document.getElementById(s).classList.toggle("active", s===id));
-  topbar.style.display=(id==="question"||id==="game2")?"flex":"none";
-  bottomNav.classList.toggle("show", id==="reveal");
-}
-function updateProg(kind){
-  const total=kind==="game2"?game2Questions.length:q1.length;
-  const idx=kind==="game2"?game2Step:step;
-  prog.style.width=`${Math.round((idx/total)*100)}%`;
-}
-function toastMsg(msg){toast.textContent=msg;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1600)}
-function burst(){
-  const colors=["#ff76aa","#ffb174","#ffc84a","#8ee6b7","#c9b3ff"];
-  confetti.innerHTML="";
-  for(let i=0;i<56;i++){const el=document.createElement("i");el.style.left=Math.random()*100+"%";el.style.background=colors[Math.floor(Math.random()*colors.length)];el.style.animationDelay=Math.random()*260+"ms";confetti.appendChild(el);}
-  setTimeout(()=>confetti.innerHTML="",1500);
-}
-
-function renderQ(){
-  show("question"); updateProg("q1");
-  const q=q1[step];
-  if(q.type==="slider"){
-    question.innerHTML=`<h2>${q.title}</h2><div class="sliderCard"><div class="rangeLabels"><span>Mostly Mom</span><span>Mostly Dad</span></div><input id="momRange" type="range" min="0" max="100" value="${state.momPercent}"><div class="pct" id="pct">${state.momPercent}% Mom · ${100-state.momPercent}% Dad</div></div><button class="cta" id="nextSlider">Next</button>`;
-    momRange.oninput=()=>{state.momPercent=+momRange.value;pct.textContent=`${state.momPercent}% Mom · ${100-state.momPercent}% Dad`;};
-    nextSlider.onclick=()=>{step++;renderQ();}; return;
-  }
-  if(q.type==="message"){
-    question.innerHTML=`<h2>${q.title}</h2><textarea id="msg" placeholder="Future NBA superstar&#10;Will definitely steal Dad's fries&#10;Future ruler of the household">${state.message||""}</textarea><div class="examples"><button class="chip" data-ex="Future NBA superstar">Future NBA superstar</button><button class="chip" data-ex="Will definitely steal Dad's fries">Will steal Dad's fries</button><button class="chip" data-ex="Future ruler of the household">Ruler of household</button></div><button class="cta" id="generate">👶 Hi Baby!</button>`;
-    document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{msg.value=c.dataset.ex});
-    generate.onclick=()=>{state.message=msg.value.trim();generateBaby();}; return;
-  }
-  question.innerHTML=`<h2>${q.title}</h2>${q.subtitle?`<div class="subtitle">${q.subtitle}</div>`:""}<div class="${q.choices.length===2?'grid2':'cards'}">${q.choices.map(c=>`<button class="cardbtn" data-v="${c.value}"><strong>${c.label}</strong>${c.sub?`<span>${c.sub}</span>`:""}</button>`).join("")}</div>`;
-  question.querySelectorAll(".cardbtn").forEach(b=>b.onclick=()=>{state[q.key]=b.dataset.v;b.classList.add("selected");setTimeout(()=>{step++;renderQ();},180);});
-}
-
-function startLoader(){
-  const facts=["Borrowing Mom's eyes...","Borrowing Dad's smile...","Calibrating cuteness...","Getting camera ready...","Almost there..."];
-  let i=0; loaderFact.textContent=facts[0]; show("loading");
-  loaderTimer=setInterval(()=>{i=(i+1)%facts.length;loaderFact.textContent=facts[i];},2500);
-}
-function stopLoader(){if(loaderTimer) clearInterval(loaderTimer); loaderTimer=null;}
-
-async function generateBaby(){
-  startLoader();
-  try{
-    const gender=state.gender==="surprise"?"baby":state.gender;
-    const body={gender, momPercent:state.momPercent, eyes:state.eyes, smile:state.smile, hair:"natural dark hair inspired by both parents", nose:"balanced blend of both parents", face:"balanced blend of both parents", customPrompt:`Hyper realistic baby portrait. ${state.message||""}`};
-    const res=await fetch("/api/generate-baby",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-    const data=await res.json();
-    if(!res.ok) throw new Error(data.error||"AI generation failed");
-    state.image=data.imageDataUrl; babyImg.src=state.image;
-    revealSummary.innerHTML=`<span class="chip">${state.gender||"surprise"}</span><span class="chip">${state.momPercent}% Mom</span><span class="chip">${100-state.momPercent}% Dad</span>`;
-    stopLoader(); show("reveal"); burst();
-  }catch(e){stopLoader();show("question");toastMsg(e.message||"AI generation failed");}
-}
-
-function renderGame2(){
-  show("game2"); updateProg("game2");
-  const q=game2Questions[game2Step];
-  const choices=q.choices.map(c=>Array.isArray(c)?{label:c[0],sub:c[1]}:{label:c,sub:""});
-  game2.innerHTML=`<h2>${q.title}</h2><div class="${choices.length===2?'grid2':'cards'}">${choices.map((c,i)=>`<button class="cardbtn" data-i="${i}"><strong>${c.label}</strong>${c.sub?`<span>${c.sub}</span>`:""}</button>`).join("")}</div>`;
-  game2.querySelectorAll(".cardbtn").forEach(b=>b.onclick=()=>{const c=choices[+b.dataset.i];state.game2[q.key]=c.sub?`${c.label} — ${c.sub}`:c.label;b.classList.add("selected");setTimeout(()=>{game2Step++; if(game2Step>=game2Questions.length){saveAll();show("done");burst();} else renderGame2();},180);});
-}
-function saveAll(){const all=JSON.parse(localStorage.getItem("babyPredictionsV8")||"[]");all.push({...state,createdAt:new Date().toISOString()});localStorage.setItem("babyPredictionsV8",JSON.stringify(all));}
-
-startBtn.onclick=()=>{step=0;renderQ();};
-navHome.onclick=()=>show("welcome");
-navPredictions.onclick=()=>{game2Step=0;renderGame2();};
-homeBtn.onclick=()=>show("welcome");
-backBtn.onclick=()=>{if(question.classList.contains("active")){if(step>0){step--;renderQ();}else show("welcome");}else if(game2.classList.contains("active")){if(game2Step>0){game2Step--;renderGame2();}else show("reveal");}};
-if("serviceWorker" in navigator){navigator.serviceWorker.register("./service-worker.js").catch(()=>{});}
-</script>
-</body>
-</html>
+const state={guestName:"",babyCallsMe:"",gender:null,eyes:null,smile:null,momPercent:50,message:"",image:"",imageUrl:"",submissionId:null,game2:{}};
+const q1=[
+{key:"guestName",type:"text",title:"👋 First, who are you?",placeholder:"Your name",required:true},
+{key:"babyCallsMe",type:"text",title:"👶 What will Baby call you?",placeholder:"e.g. Kaka, Mavshi, Mama, Dad, Pushkar"},
+{key:"gender",title:"💖 First things first...",subtitle:"Boy or Girl?",choices:[{label:"👦 Boy",value:"boy"},{label:"👧 Girl",value:"girl"},{label:"🎁 Surprise Me",value:"surprise"}]},
+{key:"eyes",title:"👀 Whose eyes?",choices:[{label:"😍 Mom's Eyes",sub:"Family Premium Edition",value:"mother"},{label:"👀 Dad's Eyes",sub:"Available While Supplies Last",value:"father"},{label:"🤝 A Little Bit Of Both",value:"both"}]},
+{key:"smile",title:"😊 That smile?",choices:[{label:"💖 Mom's Smile",value:"mother"},{label:"😎 Dad's Smile",value:"father"},{label:"🤝 A Little Bit Of Both",value:"both"}]},
+{key:"resemblance",type:"slider",title:"❤️ Overall resemblance?"},
+{key:"message",type:"message",title:"💌 Leave Baby A Message"}];
+const game2Questions=[
+{key:"future",title:"🚀 Future Calling?",choices:["💻 Amazon L5 SDE","🎤 Singing Ke Baadshah","🚩 Roadies Contestant","💃 Dance Dance Dance"]},
+{key:"humor",title:"😂 Whose Humor?",choices:[["💁 Mom's Humor","Born 28 Years Old"],["🤣 Dad's Humor","100 Taka Tunch Maal"]]},
+{key:"tendencies",title:"🎤 Musical Tendencies?",choices:[["🎶 Joins Shikha's Impromptu Singings",""],["🎧 Desi Hip Hop Needs My Support","And They Shall Have It"]]},
+{key:"destiny",title:"🎵 Musical Destiny?",choices:[["🎤 Lyrics 9000","Sur 9"],["🎼 Lyrics 9","Sur 9000"]]},
+{key:"member",title:"🎭 Most Likely To Be A Member Of?",choices:["🎤 Proud Himesh Cap Holder","😎 Sanjay Dutt Gunda Badmaash Club"]},
+{key:"entertainment",title:"📺 Entertainment Preference?",choices:["☕ The Office","🔍 Crime Procedural"]},
+{key:"marathi",title:"🗣️ Marathi Skills?",choices:["📖 Proficient In Marathi","🤔 Claims To Have Studied Marathi"]},
+{key:"vacation",title:"🌴 Dream Vacation?",choices:["👜 Luxury Shopping","🌊 Life Started In Water"]},
+{key:"school",title:"📚 School Reputation?",choices:["⭐ Teacher's Pet","⭐ Teacher's Pet"]}];
+let step=0,game2Step=0,loaderTimer=null;const screens=["welcome","question","loading","reveal","game2","done"];
+function show(id){screens.forEach(s=>document.getElementById(s).classList.toggle("active",s===id));topbar.style.display=(id==="question"||id==="game2")?"flex":"none";bottomNav.classList.toggle("show",id==="reveal")}
+function updateProg(kind){const total=kind==="game2"?game2Questions.length:q1.length;const idx=kind==="game2"?game2Step:step;prog.style.width=`${Math.round((idx/total)*100)}%`}
+function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1800)}
+function burst(){const colors=["#ff76aa","#ffb174","#ffc84a","#8ee6b7","#c9b3ff"];confetti.innerHTML="";for(let i=0;i<56;i++){const el=document.createElement("i");el.style.left=Math.random()*100+"%";el.style.background=colors[Math.floor(Math.random()*colors.length)];el.style.animationDelay=Math.random()*260+"ms";confetti.appendChild(el)}setTimeout(()=>confetti.innerHTML="",1500)}
+function renderQ(){show("question");updateProg("q1");const q=q1[step];if(q.type==="text"){question.innerHTML=`<h2>${q.title}</h2><input id="textInput" placeholder="${q.placeholder||""}" value="${state[q.key]||""}" autocomplete="off"><button class="cta" id="nextText">Next</button>`;setTimeout(()=>textInput.focus(),120);nextText.onclick=()=>{const v=textInput.value.trim();if(q.required&&!v){toastMsg("Name required");return}state[q.key]=v;step++;renderQ()};textInput.onkeydown=e=>{if(e.key==="Enter")nextText.click()};return}
+if(q.type==="slider"){question.innerHTML=`<h2>${q.title}</h2><div class="sliderCard"><div class="rangeLabels"><span>Mostly Mom</span><span>Mostly Dad</span></div><input id="momRange" type="range" min="0" max="100" value="${state.momPercent}"><div class="pct" id="pct">${state.momPercent}% Mom · ${100-state.momPercent}% Dad</div></div><button class="cta" id="nextSlider">Next</button>`;momRange.oninput=()=>{state.momPercent=+momRange.value;pct.textContent=`${state.momPercent}% Mom · ${100-state.momPercent}% Dad`};nextSlider.onclick=()=>{step++;renderQ()};return}
+if(q.type==="message"){question.innerHTML=`<h2>${q.title}</h2><textarea id="msg" placeholder="Future NBA superstar&#10;Will definitely steal Dad's fries&#10;Future ruler of the household">${state.message||""}</textarea><div class="examples"><button class="chip" data-ex="Future NBA superstar">Future NBA superstar</button><button class="chip" data-ex="Will definitely steal Dad's fries">Will steal Dad's fries</button><button class="chip" data-ex="Future ruler of the household">Ruler of household</button></div><button class="cta" id="generate">👶 Hi Baby!</button>`;document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{msg.value=c.dataset.ex});generate.onclick=()=>{state.message=msg.value.trim();generateBaby()};return}
+question.innerHTML=`<h2>${q.title}</h2>${q.subtitle?`<div class="subtitle">${q.subtitle}</div>`:""}<div class="${q.choices.length===2?'grid2':'cards'}">${q.choices.map(c=>`<button class="cardbtn" data-v="${c.value}"><strong>${c.label}</strong>${c.sub?`<span>${c.sub}</span>`:""}</button>`).join("")}</div>`;question.querySelectorAll(".cardbtn").forEach(b=>b.onclick=()=>{state[q.key]=b.dataset.v;b.classList.add("selected");setTimeout(()=>{step++;renderQ()},180)})}
+function startLoader(){const facts=["Borrowing Mom's eyes...","Borrowing Dad's smile...","Calibrating cuteness...","Getting camera ready...","Almost there..."];let i=0;loaderFact.textContent=facts[0];show("loading");loaderTimer=setInterval(()=>{i=(i+1)%facts.length;loaderFact.textContent=facts[i]},2500)}
+function stopLoader(){if(loaderTimer)clearInterval(loaderTimer);loaderTimer=null}
+async function generateBaby(){startLoader();try{const gender=state.gender==="surprise"?"baby":state.gender;const body={gender,momPercent:state.momPercent,eyes:state.eyes,smile:state.smile,hair:"natural dark hair inspired by both parents",nose:"balanced blend of both parents",face:"balanced blend of both parents",customPrompt:`Hyper realistic baby portrait. ${state.message||""}`};const res=await fetch("/api/generate-baby",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.error||"AI generation failed");state.image=data.imageDataUrl;babyImg.src=state.image;revealSummary.innerHTML=`<span class="chip">${state.guestName}</span><span class="chip">Baby calls me: ${state.babyCallsMe||"?"}</span><span class="chip">${state.gender||"surprise"}</span><span class="chip">${state.momPercent}% Mom</span><span class="chip">${100-state.momPercent}% Dad</span>`;stopLoader();show("reveal");burst()}catch(e){stopLoader();show("question");toastMsg(e.message||"AI generation failed")}}
+function renderGame2(){show("game2");updateProg("game2");const q=game2Questions[game2Step];const choices=q.choices.map(c=>Array.isArray(c)?{label:c[0],sub:c[1]}:{label:c,sub:""});game2.innerHTML=`<h2>${q.title}</h2><div class="${choices.length===2?'grid2':'cards'}">${choices.map((c,i)=>`<button class="cardbtn" data-i="${i}"><strong>${c.label}</strong>${c.sub?`<span>${c.sub}</span>`:""}</button>`).join("")}</div>`;game2.querySelectorAll(".cardbtn").forEach(b=>b.onclick=()=>{const c=choices[+b.dataset.i];state.game2[q.key]=c.sub?`${c.label} — ${c.sub}`:c.label;b.classList.add("selected");setTimeout(()=>{game2Step++;if(game2Step>=game2Questions.length){saveAll()}else renderGame2()},180)})}
+async function saveAll(){show("loading");loaderFact.textContent="Saving your prediction...";try{const body={guestName:state.guestName,babyCallsMe:state.babyCallsMe,genderGuess:state.gender,eyesGuess:state.eyes,smileGuess:state.smile,momPercent:state.momPercent,message:state.message,imageDataUrl:state.image,game2Responses:state.game2};const res=await fetch("/api/submit-prediction",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const data=await res.json();if(!res.ok)throw new Error(data.error||"Failed to save prediction");state.submissionId=data.id;state.imageUrl=data.imageUrl||"";show("done");burst()}catch(e){toastMsg(e.message||"Could not save");show("game2")}}
+startBtn.onclick=()=>{step=0;renderQ()};navHome.onclick=()=>show("welcome");navPredictions.onclick=()=>{game2Step=0;renderGame2()};homeBtn.onclick=()=>show("welcome");backBtn.onclick=()=>{if(question.classList.contains("active")){if(step>0){step--;renderQ()}else show("welcome")}else if(game2.classList.contains("active")){if(game2Step>0){game2Step--;renderGame2()}else show("reveal")}};if("serviceWorker"in navigator){navigator.serviceWorker.register("./service-worker.js").catch(()=>{})}
+</script></body></html>

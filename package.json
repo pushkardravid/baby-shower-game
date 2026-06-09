@@ -4,7 +4,8 @@
     "start": "vercel dev"
   },
   "dependencies": {
-    "openai": "^4.104.0"
+    "openai": "^4.104.0",
+    "@supabase/supabase-js": "^2.45.4"
   },
   "devDependencies": {
     "vercel": "^41.0.0"
