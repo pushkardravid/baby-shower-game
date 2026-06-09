@@ -4,7 +4,6 @@ import fs from "fs";
 import path from "path";
 
 export const config = { api: { bodyParser: { sizeLimit: "4mb" } } };
-
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 function clean(value, fallback = "") {
@@ -14,7 +13,6 @@ function clean(value, fallback = "") {
 function buildPrompt(body) {
   const momPercent = Math.max(0, Math.min(100, Number(body.momPercent ?? 50)));
   const dadPercent = 100 - momPercent;
-
   return `
 Create one hyper-realistic, adorable baby ${clean(body.gender, "baby")} portrait for a baby shower prediction game.
 
@@ -46,35 +44,21 @@ Visual style:
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Use POST" });
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ error: "OPENAI_API_KEY is not configured in Vercel environment variables." });
-  }
+  if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: "OPENAI_API_KEY is not configured." });
 
   try {
-    const momPath = path.join(process.cwd(), "assets", "mom.jpg");
-    const dadPath = path.join(process.cwd(), "assets", "dad.jpg");
-
-    const momFile = await toFile(fs.createReadStream(momPath), "mother-reference.jpg", { type: "image/jpeg" });
-    const dadFile = await toFile(fs.createReadStream(dadPath), "father-reference.jpg", { type: "image/jpeg" });
-
-    const prompt = buildPrompt(req.body || {});
-
+    const momFile = await toFile(fs.createReadStream(path.join(process.cwd(), "assets", "mom.jpg")), "mother-reference.jpg", { type: "image/jpeg" });
+    const dadFile = await toFile(fs.createReadStream(path.join(process.cwd(), "assets", "dad.jpg")), "father-reference.jpg", { type: "image/jpeg" });
     const result = await client.images.edit({
       model: "gpt-image-1",
       image: [momFile, dadFile],
-      prompt,
+      prompt: buildPrompt(req.body || {}),
       size: "1024x1024",
       quality: "high"
     });
-
     const b64 = result.data?.[0]?.b64_json;
     if (!b64) return res.status(500).json({ error: "Image generation returned no image." });
-
-    return res.status(200).json({
-      imageDataUrl: `data:image/png;base64,${b64}`,
-      promptUsed: prompt,
-      referencesUsed: ["mother-reference.jpg", "father-reference.jpg"]
-    });
+    return res.status(200).json({ imageDataUrl: `data:image/png;base64,${b64}` });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: error?.message || "Failed to generate AI baby image." });
