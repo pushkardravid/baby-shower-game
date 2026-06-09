@@ -19,8 +19,21 @@ function clean(value, fallback = "") {
 function buildPrompt(body) {
   const momPercent = Math.max(0, Math.min(100, Number(body.momPercent ?? 50)));
   const dadPercent = 100 - momPercent;
+
+  const gender = clean(body.gender, "baby");
+  const eyes = clean(body.eyes, "both parents");
+  const smile = clean(body.smile, "both parents");
+  const nose = clean(body.nose, "balanced blend of both parents");
+  const hairType = clean(body.hairType, "natural dark baby hair");
+  const cheeks = clean(body.cheeks, "soft baby cheeks");
+  const expression = clean(body.expression, "sweet natural expression");
+  const outfit = clean(body.outfit, "simple cute baby outfit");
+  const babyDescription = clean(body.babyDescription, "");
+  const customPrompt = clean(body.customPrompt, "");
+  const variation = clean(body.variation, "natural candid baby portrait");
+
   return `
-Create one hyper-realistic, adorable baby ${clean(body.gender, "baby")} portrait for a baby shower prediction game.
+Create one hyper-realistic, adorable baby ${gender} portrait for a baby shower prediction game.
 
 IMPORTANT REFERENCE INSTRUCTIONS:
 - Two parent photos are provided as image inputs: the first image is the mother, the second image is the father.
@@ -28,21 +41,34 @@ IMPORTANT REFERENCE INSTRUCTIONS:
 - The baby should plausibly appear to be their biological child, not like a random stock baby.
 - Preserve skin tone tendencies, facial proportions, eye shape, smile characteristics, hair characteristics, and overall family resemblance.
 - Translate adult features into an age-appropriate baby face.
+- Avoid making every output follow the same template. Vary the pose, expression, background, outfit, crop, and lighting based on the guest inputs.
 
-Guest-selected traits:
-- Eyes inspired by: ${clean(body.eyes, "both parents")}
-- Smile inspired by: ${clean(body.smile, "both parents")}
+Guest-selected visual traits:
+- Eyes inspired by: ${eyes}
+- Smile/lips inspired by: ${smile}
+- Nose: ${nose}
+- Hair: ${hairType}
+- Cheeks: ${cheeks}
+- Expression: ${expression}
+- Outfit / vibe: ${outfit}
 - Overall resemblance target: ${momPercent}% mother and ${dadPercent}% father
-- Extra context: ${clean(body.customPrompt, "No extra request.")}
+
+Guest description of what baby may look like:
+${babyDescription || "No detailed visual description provided."}
+
+Guest extra message:
+${customPrompt || "No extra request."}
+
+Composition variation:
+${variation}
 
 Visual style:
 - hyper-realistic baby portrait
-- premium soft studio photography look
+- premium photography look, not an illustration
 - cute, warm, polished, high-detail
 - natural baby skin texture, soft cheeks, expressive eyes
-- pastel baby-shower background
-- centered shoulders-up portrait
-- soft warm lighting
+- realistic family resemblance
+- single baby only
 - no text, no watermark, no extra people
 - avoid sketch, drawing, cartoon, comic, flat illustration, painterly style, AI-looking skin, distorted features, uncanny face
 `.trim();
